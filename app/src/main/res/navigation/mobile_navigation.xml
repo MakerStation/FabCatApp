@@ -17,4 +17,10 @@
         android:label="Bluetooth"
         tools:layout="@layout/fragment_bluetooth" />
 
+    <fragment
+        android:id="@+id/nav_option"
+        android:name="com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_options" />
+
 </navigation>

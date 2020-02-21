@@ -8,9 +8,11 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="connessione">Connessione</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="home">Home</string>
+    <string name="homefragment">HomeFragment</string>
+    <string name="fabcat_app">FabCat app</string>
+    <string name="fatto_da_sintuz_e_fedeb">Fatto da Sintuz e Fedeb</string>
+    <string name="brought_to_you_by_sintuz_amp_fedeb"><![CDATA[Brought to you by sintuz & fedeb]]></string>
 </resources>
