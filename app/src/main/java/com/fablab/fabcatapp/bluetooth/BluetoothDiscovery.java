@@ -25,7 +25,6 @@ import java.util.Set;
 
 public class BluetoothDiscovery extends MainActivity implements Runnable {
     public Thread bluetoothDiscovery = new Thread(this);
-    public int devicesFound = 0;
     private ArrayList<BluetoothDevice> availableDevices = new ArrayList<>();
     public static int countdown;
     private static boolean isDiscoveryRunning = false;
@@ -58,9 +57,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (device != null) {
                         System.out.println("Device found: " + device.getName() + "; MAC " + device.getAddress());
-                        devicesFound++;
                         availableDevices.add(device);
-                        BluetoothFragment.devicesFoundTextView.post(() -> BluetoothFragment.devicesFoundTextView.setText("Dispositivi trovati: " + devicesFound + " Size: " + availableDevices.size()));
                     } else {
                         System.out.println("***DISPOSITIVO NULLO TROVATO, LO IGNORIAMO...");
                     }
@@ -142,10 +139,6 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
             currentButton.setText(device.getName());
 
             currentButton.setOnClickListener((v) -> new Handler(Looper.getMainLooper()).post(() -> {
-                new AlertDialog.Builder(MainActivity.context).setTitle("Avviso").setMessage("Connessione a: " + device.getName())
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        })
-                        .show();
                 BluetoothConnect connect = new BluetoothConnect(device);
                 connect.connect.start();
             }));

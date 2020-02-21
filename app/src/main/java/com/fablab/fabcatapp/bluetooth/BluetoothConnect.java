@@ -23,7 +23,8 @@ public class BluetoothConnect extends MainActivity implements Runnable {
     private final BluetoothSocket bluetoothSocket;
     public Thread connect = new Thread(this);
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
+    private static boolean ignoreInstreamInterruption = false;
+    public static OutputStream outStream;
 
     public BluetoothConnect(BluetoothDevice device) {
         // Use a temporary object that is later assigned to bluetoothSocket
@@ -44,12 +45,12 @@ public class BluetoothConnect extends MainActivity implements Runnable {
     public void run() {
         try {
             bluetoothSocket.connect();
-
-            //successo
+            ignoreInstreamInterruption = false;
             new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("La connessione è stata stabilita con successo.", "message", BluetoothFragment.root));
             BluetoothFragment.bluetoothScrollViewLayout.post(() -> {
                 BluetoothFragment.bluetoothScrollViewLayout.removeAllViews();
-                BluetoothFragment.devicesFoundTextView.setText("Connesso");
+                BluetoothFragment.discoveryOrDisconnectButton.setText("Disconnetti");
+                BluetoothFragment.discoveryOrDisconnectButton.setOnClickListener((view) -> disconnectBluetooth());
                 BluetoothFragment.discoveryCountdownTextView.setText("");
 
                 BluetoothFragment.output = new TextView(MainActivity.context);
@@ -58,14 +59,14 @@ public class BluetoothConnect extends MainActivity implements Runnable {
 
             OutputStream out = bluetoothSocket.getOutputStream();
             InputStream in = bluetoothSocket.getInputStream();
+            outStream = out;
 
             DataOutputStream btout = new DataOutputStream(out);
+
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
             try {
-                btout.writeChars("*****Prova");
-                System.out.println("***MESSAGGIO MANDATO");
                 System.out.println("*********LEGGO STREAM");
                 String message;
                 while ((message = br.readLine()) != null) {
@@ -80,7 +81,10 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                     BluetoothFragment.bluetoothScrollview.post(() -> BluetoothFragment.bluetoothScrollview.fullScroll(View.FOCUS_DOWN));
                 }
             } catch (Exception e) {
-                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Instrem interrrotto: disconnesso", "message", BluetoothFragment.root));
+                if (!ignoreInstreamInterruption) {
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Instrem interrrotto: disconnesso", "message", BluetoothFragment.root));
+                }
+                BluetoothFragment.resetDiscoveryOrDisconnectButtonState();
             }
         } catch (Exception e) {
             // Unable to connect; close the socket and return.
@@ -94,19 +98,19 @@ public class BluetoothConnect extends MainActivity implements Runnable {
     }
 
     // Closes the client socket and causes the thread to finish.
-    public void cancel() {
+    public void disconnectBluetooth() {
         try {
+            ignoreInstreamInterruption = true;
             bluetoothSocket.close();
         } catch (IOException e) {
             new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", "message", BluetoothFragment.root));
         }
     }
 
-    private void sendData(String message, OutputStream outStream) {
-        byte[] msgBuffer = message.getBytes();
+    public static void sendData(byte pref, byte cmd) {
         try {
             System.out.println("***MANDO MESSAGGIO");
-            outStream.write(msgBuffer);
+            outStream.write(new byte[] {pref, cmd});
             outStream.flush();
             System.out.println("***FATTO");
         } catch (IOException e) {
@@ -115,4 +119,6 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         }
         new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("messaggio mandato", "message", BluetoothFragment.root));
     }
+
+
 }

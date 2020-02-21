@@ -2,7 +2,6 @@ package com.fablab.fabcatapp.ui.bluetooth;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,10 @@ import androidx.fragment.app.Fragment;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.bluetooth.BluetoothDiscovery;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 
 public class BluetoothFragment extends Fragment {
-    @SuppressLint("StaticFieldLeak")
-    public static TextView devicesFoundTextView;
     @SuppressLint("StaticFieldLeak")
     public static LinearLayout bluetoothScrollViewLayout;
     @SuppressLint("StaticFieldLeak")
@@ -73,6 +69,31 @@ public class BluetoothFragment extends Fragment {
         }
 
         return root;
+    }
+    @SuppressLint("SetTextI18n")
+    public static void resetDiscoveryOrDisconnectButtonState() {
+        BluetoothFragment.discoveryOrDisconnectButton.post(() -> {
+            BluetoothFragment.discoveryOrDisconnectButton.setText("Scansiona dispositivi");
+            BluetoothFragment.discoveryOrDisconnectButton.setOnClickListener((v) -> {
+                BluetoothDiscovery bluetooth = new BluetoothDiscovery();
+                try {
+                    if (!bluetooth.bluetoothDiscovery.isAlive()) {
+                        bluetooth.bluetoothDiscovery.start();
+                    }
+                    MainActivity.createAlert("Scansione avviata!", "message", BluetoothFragment.root);
+                } catch (Exception e) {
+                    TextView errorMsg = new TextView(MainActivity.context);
+                    errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    ));
+                    errorMsg.setText("M: " + e.getMessage() + " Stack: " + Arrays.toString(e.getStackTrace()));
+                    BluetoothFragment.bluetoothScrollViewLayout.addView(errorMsg);
+
+                    MainActivity.createAlert("Abbiamo riscontrato un errore nella scansione dei dispositivi, prova a riavviare l'app.", "message", BluetoothFragment.root);
+                }
+            });
+        });
     }
 
     @Override
