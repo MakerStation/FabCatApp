@@ -44,6 +44,7 @@ public class BluetoothFragment extends Fragment {
 
             discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
+                BluetoothFragment.bluetoothScrollViewLayout.removeAllViews();
                 BluetoothDiscovery bluetooth = new BluetoothDiscovery();
                 try {
                     if (!bluetooth.bluetoothDiscovery.isAlive()) {

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> BluetoothConnect.sendData((byte) 221, (byte) 5));
+        fab.setOnClickListener(view -> BluetoothConnect.sendCustomCommand());
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static void createAlert(String message, String type, View view) {
+    public static void createAlert(String message, View view) {
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 }

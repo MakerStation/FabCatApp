@@ -1,11 +1,16 @@
 package com.fablab.fabcatapp.bluetooth;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
@@ -36,7 +41,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
             // MY_UUID is the app's UUID string, also used in the server code.
             tmp = device.createRfcommSocketToServiceRecord(myUUID);
         } catch (IOException e) {
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Socket's create() method failed", "message", BluetoothFragment.root));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Socket's create() method failed", BluetoothFragment.root));
         }
         bluetoothSocket = tmp;
     }
@@ -46,7 +51,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         try {
             bluetoothSocket.connect();
             ignoreInstreamInterruption = false;
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("La connessione è stata stabilita con successo.", "message", BluetoothFragment.root));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("La connessione è stata stabilita con successo.", BluetoothFragment.root));
             BluetoothFragment.bluetoothScrollViewLayout.post(() -> {
                 BluetoothFragment.bluetoothScrollViewLayout.removeAllViews();
                 BluetoothFragment.discoveryOrDisconnectButton.setText("Disconnetti");
@@ -82,7 +87,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                 }
             } catch (Exception e) {
                 if (!ignoreInstreamInterruption) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Instrem interrrotto: disconnesso", "message", BluetoothFragment.root));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Instrem interrrotto: disconnesso", BluetoothFragment.root));
                 }
                 BluetoothFragment.resetDiscoveryOrDisconnectButtonState();
             }
@@ -91,9 +96,9 @@ public class BluetoothConnect extends MainActivity implements Runnable {
             try {
                 bluetoothSocket.close();
             } catch (IOException closeException) {
-                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", "message", BluetoothFragment.root));
+                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", BluetoothFragment.root));
             }
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Connessione fallita: " + e.getMessage(), "message", BluetoothFragment.root));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Connessione fallita: " + e.getMessage(), BluetoothFragment.root));
         }
     }
 
@@ -103,7 +108,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
             ignoreInstreamInterruption = true;
             bluetoothSocket.close();
         } catch (IOException e) {
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", "message", BluetoothFragment.root));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", BluetoothFragment.root));
         }
     }
 
@@ -115,9 +120,41 @@ public class BluetoothConnect extends MainActivity implements Runnable {
             System.out.println("***FATTO");
         } catch (IOException e) {
             String msg = "In onResume() and an exception occurred during write: " + e.getMessage();
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert(msg, "message", BluetoothFragment.root));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert(msg, BluetoothFragment.root));
         }
-        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("messaggio mandato", "message", BluetoothFragment.root));
+        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("messaggio mandato", BluetoothFragment.root));
+    }
+
+    public static void sendCustomCommand() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.context);
+        dialog.setTitle("Parametri comando");
+        dialog.setMessage("Inserire prefisso poi comando");
+
+        LinearLayout layout = new LinearLayout(MainActivity.context);
+        layout.setOrientation(LinearLayout.VERTICAL); //se non si imposta questa roba puoi mostrare solo una view alla volta
+
+        EditText prefixInput = new EditText(MainActivity.context);
+        prefixInput.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        prefixInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //per mettere solo l'input a decimale
+
+        layout.addView(prefixInput);
+        EditText cmdInput = new EditText(MainActivity.context);
+        cmdInput.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        cmdInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //per mettere solo l'input a decimale
+        layout.addView(cmdInput);
+        dialog.setView(layout);
+        dialog.setPositiveButton("Fine",
+                (dialog1, which) -> {
+                    sendData((byte) Integer.parseInt(prefixInput.getText().toString()), (byte) Integer.parseInt(cmdInput.getText().toString()));
+                });
+        dialog.show();
+
     }
 
 

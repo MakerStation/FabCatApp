@@ -177,7 +177,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                 isDiscoveryRunning = true;
                 BluetoothAdapter adapter = getAdapter();
                 if (adapter == null) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Il dispositivo non supporta il bluetoothDiscovery, perció non potrá essere usato.", "message", BluetoothFragment.root));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Il dispositivo non supporta il bluetoothDiscovery, perció non potrá essere usato.", BluetoothFragment.root));
                 } else {
                     try {
                         BroadcastReceiver receiver = registerListener();
@@ -194,7 +194,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                         errorMsg.setText(message);
                         BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(errorMsg));
 
-                        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Errore nell'avvio del bluetoothDiscovery. Prova a riavviare l'app. Causa: " + e.getMessage(), "exit", BluetoothFragment.root));
+                        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Errore nell'avvio del bluetoothDiscovery. Prova a riavviare l'app. Causa: " + e.getMessage(), BluetoothFragment.root));
                         isDiscoveryRunning = false;
                         bluetoothDiscovery = null;
                     }
