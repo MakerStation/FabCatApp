@@ -1,15 +1,21 @@
 package com.fablab.fabcatapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
+import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -27,6 +33,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> BluetoothConnect.sendCustomCommand());
+        fab.setOnClickListener(BluetoothConnect::sendCustomCommand); //equivale a (view) -> BluetoothConnect.sendCustomCommand(view);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_bluetooth, R.id.nav_home)
+                R.id.nav_bluetooth, R.id.nav_home, R.id.nav_options)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -61,9 +69,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        OptionsFragment.fetchSettings();
+        if (OptionsFragment.isAppFirstRun()) {
+            OptionsFragment.setPreferencesBoolean("isAppFirstRun", false);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu); creare il file per menu coi 3 puntini in alto a dx
+        getMenuInflater().inflate(R.menu.main, menu);
+        menu.getItem(0).setOnMenuItemClickListener(item -> {
+            BluetoothConnect.cat.reset();
+            return false;
+        });
         return true;
     }
 
@@ -144,9 +165,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void exitDueTo(@NonNull String cause) {
-
         switch (cause) {
-
             case "GPS_PERMISSION": {
                 new AlertDialog.Builder(context).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al GPS per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
@@ -160,12 +179,51 @@ public class MainActivity extends AppCompatActivity {
             }
 
             break;
-
         }
-
     }
 
     public static void createAlert(String message, View view) {
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    public static void createOverlayAlert(String title, String message) {
+        if (MainActivity.context != null) {
+            new AlertDialog.Builder(MainActivity.context, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
+        }
+    }
+
+    public static void createCriticalErrorAlert(String title, String message) {
+        new AlertDialog.Builder(MainActivity.context, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Riavvia", (dialog, which) -> {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(1);
+                }
+        ).show();
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } else {
+            createOverlayAlert("Errore", "Abbiamo riscontrato un errore nella rimozione della tastiera.");
+        }
+    }
+
+
+    @Override //quando si clicca fuori da un edittext perde focus e chiama l'event listener
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    System.out.println("*********TOUCH EVENT");
+                    v.clearFocus();
+                    hideKeyboardFrom(this, v);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 }

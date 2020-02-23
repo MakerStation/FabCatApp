@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
@@ -14,14 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
+import com.fablab.fabcatapp.cat.cat;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class BluetoothConnect extends MainActivity implements Runnable {
@@ -30,15 +30,12 @@ public class BluetoothConnect extends MainActivity implements Runnable {
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private static boolean ignoreInstreamInterruption = false;
     public static OutputStream outStream;
+    public static cat cat = new cat();
 
     public BluetoothConnect(BluetoothDevice device) {
-        // Use a temporary object that is later assigned to bluetoothSocket
-        // because bluetoothSocket is final.
         BluetoothSocket tmp = null;
 
         try {
-            // Get a BluetoothSocket to connect with the given BluetoothDevice.
-            // MY_UUID is the app's UUID string, also used in the server code.
             tmp = device.createRfcommSocketToServiceRecord(myUUID);
         } catch (IOException e) {
             new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Socket's create() method failed", BluetoothFragment.root));
@@ -62,17 +59,13 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                 BluetoothFragment.bluetoothScrollViewLayout.addView(BluetoothFragment.output);
             });
 
-            OutputStream out = bluetoothSocket.getOutputStream();
+            outStream = bluetoothSocket.getOutputStream();
+
             InputStream in = bluetoothSocket.getInputStream();
-            outStream = out;
-
-            DataOutputStream btout = new DataOutputStream(out);
-
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
             try {
-                System.out.println("*********LEGGO STREAM");
                 String message;
                 while ((message = br.readLine()) != null) {
                     System.out.println("##########ricevuto: " + message);
@@ -90,6 +83,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                     new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Instrem interrrotto: disconnesso", BluetoothFragment.root));
                 }
                 BluetoothFragment.resetDiscoveryOrDisconnectButtonState();
+                outStream = null;
             }
         } catch (Exception e) {
             // Unable to connect; close the socket and return.
@@ -102,7 +96,6 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         }
     }
 
-    // Closes the client socket and causes the thread to finish.
     public void disconnectBluetooth() {
         try {
             ignoreInstreamInterruption = true;
@@ -112,20 +105,26 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         }
     }
 
-    public static void sendData(byte pref, byte cmd) {
-        try {
-            System.out.println("***MANDO MESSAGGIO");
-            outStream.write(new byte[] {pref, cmd});
-            outStream.flush();
-            System.out.println("***FATTO");
-        } catch (IOException e) {
-            String msg = "In onResume() and an exception occurred during write: " + e.getMessage();
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert(msg, BluetoothFragment.root));
+    public static void sendData(View callingView, byte pref, byte cmd, byte... extra) {
+        if (checkConnection(callingView)) {
+            byte[] command = new byte[2 + extra.length];
+            command[0] = pref;
+            command[1] = cmd;
+            System.arraycopy(extra, 0, command, 2, extra.length + 2 - 2);
+            try {
+                System.out.println("***MANDO MESSAGGIO: " + Arrays.toString(command));
+                outStream.write(command);
+                outStream.flush();
+                System.out.println("***FATTO");
+            } catch (IOException e) {
+                String msg = "In onResume() and an exception occurred during write: " + e.getMessage();
+                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert(msg, callingView));
+            }
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("messaggio mandato", callingView));
         }
-        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("messaggio mandato", BluetoothFragment.root));
     }
 
-    public static void sendCustomCommand() {
+    public static void sendCustomCommand(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.context);
         dialog.setTitle("Parametri comando");
         dialog.setMessage("Inserire prefisso poi comando");
@@ -149,13 +148,16 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         cmdInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //per mettere solo l'input a decimale
         layout.addView(cmdInput);
         dialog.setView(layout);
-        dialog.setPositiveButton("Fine",
-                (dialog1, which) -> {
-                    sendData((byte) Integer.parseInt(prefixInput.getText().toString()), (byte) Integer.parseInt(cmdInput.getText().toString()));
-                });
+        dialog.setPositiveButton("Fine", (dialog1, which) -> sendData(view, (byte) Integer.parseInt(prefixInput.getText().toString()), (byte) Integer.parseInt(cmdInput.getText().toString())));
         dialog.show();
-
     }
 
-
+    private static boolean checkConnection(View callingView) {
+        if (outStream == null) {
+            MainActivity.createAlert("Non sei connesso!", callingView);
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

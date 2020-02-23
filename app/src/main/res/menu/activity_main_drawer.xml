@@ -19,5 +19,21 @@
                 android:title="@string/bluetooth" />
         </menu>
     </item>
+    <item android:title="@string/configurazione">
+        <menu>
+            <item
+                android:id="@+id/nav_options"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/impostazioni" />
+        </menu>
+    </item>
+    <item android:title="@string/gatto">
+        <menu>
+            <item
+                android:id="@+id/nav_controls"
+                android:icon="@drawable/ic_controls"
+                android:title="@string/controlli" />
+        </menu>
+    </item>
 
 </menu>

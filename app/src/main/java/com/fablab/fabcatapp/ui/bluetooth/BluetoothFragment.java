@@ -50,7 +50,7 @@ public class BluetoothFragment extends Fragment {
                     if (!bluetooth.bluetoothDiscovery.isAlive()) {
                         bluetooth.bluetoothDiscovery.start();
                     }
-                    MainActivity.createAlert("Scansione avviata!", "message", root);
+                    MainActivity.createAlert("Scansione avviata!", root);
                 } catch (Exception e) {
                     TextView errorMsg = new TextView(MainActivity.context);
                     errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
@@ -60,7 +60,7 @@ public class BluetoothFragment extends Fragment {
                     errorMsg.setText("M: " + e.getMessage() + " Stack: " + Arrays.toString(e.getStackTrace()));
                     bluetoothScrollViewLayout.addView(errorMsg);
 
-                    MainActivity.createAlert("Abbiamo riscontrato un errore nella scansione dei dispositivi, prova a riavviare l'app.", "message", root);
+                    MainActivity.createAlert("Abbiamo riscontrato un errore nella scansione dei dispositivi, prova a riavviare l'app.", root);
                 }
             });
 
@@ -81,7 +81,7 @@ public class BluetoothFragment extends Fragment {
                     if (!bluetooth.bluetoothDiscovery.isAlive()) {
                         bluetooth.bluetoothDiscovery.start();
                     }
-                    MainActivity.createAlert("Scansione avviata!", "message", BluetoothFragment.root);
+                    MainActivity.createAlert("Scansione avviata!", BluetoothFragment.root);
                 } catch (Exception e) {
                     TextView errorMsg = new TextView(MainActivity.context);
                     errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
@@ -91,7 +91,7 @@ public class BluetoothFragment extends Fragment {
                     errorMsg.setText("M: " + e.getMessage() + " Stack: " + Arrays.toString(e.getStackTrace()));
                     BluetoothFragment.bluetoothScrollViewLayout.addView(errorMsg);
 
-                    MainActivity.createAlert("Abbiamo riscontrato un errore nella scansione dei dispositivi, prova a riavviare l'app.", "message", BluetoothFragment.root);
+                    MainActivity.createAlert("Abbiamo riscontrato un errore nella scansione dei dispositivi, prova a riavviare l'app.", BluetoothFragment.root);
                 }
             });
         });

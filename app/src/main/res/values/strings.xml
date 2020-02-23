@@ -15,4 +15,9 @@
     <string name="fabcat_app">FabCat app</string>
     <string name="fatto_da_sintuz_e_fedeb">Fatto da Sintuz e Fedeb</string>
     <string name="brought_to_you_by_sintuz_amp_fedeb"><![CDATA[Brought to you by sintuz & fedeb]]></string>
+    <string name="reset">Reset</string>
+    <string name="configurazione">Configurazione</string>
+    <string name="impostazioni">Impostazioni</string>
+    <string name="gatto">Gatto</string>
+    <string name="controlli">Controlli</string>
 </resources>
