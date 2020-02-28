@@ -31,4 +31,10 @@
         <item name="android:background">@color/menuBackGround</item>
     </style>
 
+    <style name="OutlinedButtonTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
 </resources>

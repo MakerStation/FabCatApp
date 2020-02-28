@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
+import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
 import java.util.ArrayList;
@@ -130,12 +131,12 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
         for (BluetoothDevice device : pairedAndAvailableDevices) {
             Button currentButton = new Button(MainActivity.context);
             currentButton.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
 
             currentButton.setText(device.getName());
-
+            currentButton.setBackgroundResource(R.drawable.outlined_button);
             currentButton.setOnClickListener((v) -> new Handler(Looper.getMainLooper()).post(() -> {
                 BluetoothConnect connect = new BluetoothConnect(device);
                 connect.connect.start();
