@@ -30,9 +30,13 @@
     <item android:title="@string/gatto">
         <menu>
             <item
-                android:id="@+id/nav_controls"
+                android:id="@+id/nav_motors"
+                android:icon="@drawable/ic_motor"
+                android:title="@string/motors" />
+            <item
+                android:id="@+id/nav_positions"
                 android:icon="@drawable/ic_controls"
-                android:title="@string/controlli" />
+                android:title="@string/positions" />
         </menu>
     </item>
 

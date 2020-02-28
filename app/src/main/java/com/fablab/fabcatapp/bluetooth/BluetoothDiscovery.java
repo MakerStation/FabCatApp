@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
@@ -177,7 +175,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                 isDiscoveryRunning = true;
                 BluetoothAdapter adapter = getAdapter();
                 if (adapter == null) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Il dispositivo non supporta il bluetoothDiscovery, perció non potrá essere usato.", BluetoothFragment.root));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Il dispositivo non supporta il Bluetooth, perció non potrá essere usato.", BluetoothFragment.root, false));
                 } else {
                     try {
                         BroadcastReceiver receiver = registerListener();
@@ -194,22 +192,16 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                         errorMsg.setText(message);
                         BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(errorMsg));
 
-                        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Errore nell'avvio del bluetoothDiscovery. Prova a riavviare l'app. Causa: " + e.getMessage(), BluetoothFragment.root));
+                        MainActivity.createAlert("Errore nell'avvio del bluetoothDiscovery. Prova a riavviare l'app. Causa: " + e.getMessage(), BluetoothFragment.root, false);
                         isDiscoveryRunning = false;
                         bluetoothDiscovery = null;
                     }
                 }
             } else {
-                new Handler(Looper.getMainLooper()).post(() -> new AlertDialog.Builder(MainActivity.context).setTitle("Avviso").setMessage("Attendi la fine della scansione attuale.")
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        })
-                        .show());
+                MainActivity.createAlert("Attendi la fine della scansione attuale", BluetoothFragment.root, true);
             }
         } catch (Exception e) {
-            new Handler(Looper.getMainLooper()).post(() -> new AlertDialog.Builder(MainActivity.context).setTitle("Avviso").setMessage("Abbiamo riscontrato un errore nell'avvio della scansione controlla che il Bluetooth sia attivato.")
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    })
-                    .show());
+            MainActivity.createAlert("Abbiamo riscontrato un errore. Controlla che il Bluetooth sia acceso.", BluetoothFragment.root, false);
             isDiscoveryRunning = false;
             bluetoothDiscovery = null;
         }

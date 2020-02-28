@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 
@@ -14,7 +13,6 @@ import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -37,7 +35,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     public static Context context;
     private static String currentPermissionRequest;
@@ -81,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        menu.getItem(0).setOnMenuItemClickListener(item -> {
-            BluetoothConnect.cat.reset();
-            return false;
-        });
         return true;
     }
 
@@ -182,8 +175,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void createAlert(String message, View view) {
+    public static void createAlert(String message, View view, boolean wait) {
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        if (wait) {
+            waitForSnackBarClosure();
+        }
+    }
+
+    private static void waitForSnackBarClosure() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            MainActivity.createCriticalErrorAlert("Errore critico", "Abbiamo riscontrato un errore critico ed é necessario riavviare l'applicazione.");
+        }
     }
 
     public static void createOverlayAlert(String title, String message) {
@@ -218,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 Rect outRect = new Rect();
                 v.getGlobalVisibleRect(outRect);
                 if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
-                    System.out.println("*********TOUCH EVENT");
                     v.clearFocus();
                     hideKeyboardFrom(this, v);
                 }

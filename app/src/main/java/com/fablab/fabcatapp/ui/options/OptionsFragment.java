@@ -33,7 +33,7 @@ public class OptionsFragment extends Fragment {
                 try {
                     setPreferencesInt("pitchRollDelay", Integer.parseInt(pitchRollDelay.getText().toString()));
                 } catch (Exception e) {
-                    MainActivity.createAlert("Inserisci un numero valido!", root);
+                    MainActivity.createAlert("Inserisci un numero valido!", root, false);
                     hideOptionsFragmentKeyboard(root);
                 }
             }
@@ -55,7 +55,7 @@ public class OptionsFragment extends Fragment {
         if (MainActivity.context != null) {
             preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.context);
         } else {
-            MainActivity.createAlert("Errore nella lettura delle impostazioni, prova a riavviare l'applicazione", BluetoothFragment.root);
+            MainActivity.createAlert("Errore nella lettura delle impostazioni, prova a riavviare l'applicazione", BluetoothFragment.root, false);
         }
         if (!isAppFirstRun()) {
             pitchRollDelay = getPreferencesInt("pitchRollDelay");
@@ -98,13 +98,8 @@ public class OptionsFragment extends Fragment {
         }
     }
 
-    private void applyChanges() {
-
-    }
-
     @Override
     public void onPause() {
         super.onPause();
-        applyChanges();
     }
 }

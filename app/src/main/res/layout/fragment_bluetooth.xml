@@ -8,9 +8,11 @@
 
     <Button
         android:id="@+id/startDiscoveryOrDisconnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scansiona dispositivi"
+        android:layout_width="183dp"
+        android:layout_height="46dp"
+        android:text="@string/scansiona_dispositivi"
+        android:textSize="18sp"
+        app:icon="@drawable/ic_connect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
