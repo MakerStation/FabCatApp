@@ -39,4 +39,10 @@
     <string name="back_right_shoulder">Back right shoulder</string>
     <string name="positions">Positions</string>
     <string name="scansiona_dispositivi">Scan devices</string>
+    <string name="start_position">Start position</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="calibration_position">Calibration position</string>
+    <string name="all_motors_90_degrees">All motors 90 degrees</string>
+    <string name="straight_leg">Straight leg</string>
+    <string name="crouched_position">Crouched position</string>
 </resources>

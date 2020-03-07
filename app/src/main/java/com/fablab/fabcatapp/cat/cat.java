@@ -58,6 +58,10 @@ public class cat {
         }
     }
 
+    public void function(View callingView, int function) {
+        BluetoothConnect.sendData(callingView, FUNCTIONSPREFIX, (byte) function);
+    }
+
     public void stopMovement(int motorId) {
         if (motorMovementTimer.get(motorId) != null) { //se non si é connessi questo é nullo
             motorMovementTimer.get(motorId).cancel();

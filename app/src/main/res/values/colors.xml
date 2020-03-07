@@ -9,4 +9,6 @@
     <color name="testButtonBG">#0004FF</color>
     <color name="motorIncrementButton">#5CC478</color>
     <color name="motorDecrementButton">#DE3737</color>
+    <color name="scanComplete">@color/colorPrimary</color>
+    <color name="deviceButton">@color/colorPrimary</color>
 </resources>

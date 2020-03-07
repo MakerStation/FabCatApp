@@ -36,5 +36,9 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-
+    <style name="coloredButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">20sp</item>
+        <item name="android:backgroundTint">#006CBD</item>
+        <item name="android:padding">5sp</item>
+    </style>
 </resources>

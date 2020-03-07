@@ -29,4 +29,10 @@
         android:label="Controls"
         tools:layout="@layout/fragment_motors" />
 
+    <fragment
+        android:id="@+id/nav_positions"
+        android:name="com.fablab.fabcatapp.ui.positions.PositionsFragment"
+        android:label="Positions"
+        tools:layout="@layout/fragment_positions" />
+
 </navigation>

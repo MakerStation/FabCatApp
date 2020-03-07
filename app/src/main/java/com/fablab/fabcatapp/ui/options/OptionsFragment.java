@@ -39,6 +39,19 @@ public class OptionsFragment extends Fragment {
             }
         });
 
+        EditText bluetoothDiscoveryCountdown = root.findViewById(R.id.bluetoothDiscoveryCountdown);
+        bluetoothDiscoveryCountdown.setText(getPreferencesInt("discoveryCountdown") + ""); //se viene passato solo un int riceviamo android.content.res.Resources$NotFoundException perché tenta di usare String.valueOf e il nostro in per cercare la risorsa da R.string
+        bluetoothDiscoveryCountdown.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                try {
+                    setPreferencesInt("discoveryCountdown", Integer.parseInt(bluetoothDiscoveryCountdown.getText().toString()));
+                } catch (Exception e) {
+                    MainActivity.createAlert("Inserisci un numero valido!", root, false);
+                    hideOptionsFragmentKeyboard(root);
+                }
+            }
+        });
+
         return root;
     }
 
