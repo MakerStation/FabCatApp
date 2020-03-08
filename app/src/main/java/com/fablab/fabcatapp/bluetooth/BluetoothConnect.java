@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,10 +33,11 @@ public class BluetoothConnect extends MainActivity implements Runnable {
     private static boolean ignoreInstreamInterruption = false;
     public static OutputStream outStream;
     public static cat cat = new cat();
+    private Context applicationContext;
 
-    public BluetoothConnect(BluetoothDevice device) {
+    public BluetoothConnect(BluetoothDevice device, Context applicationContext) {
         BluetoothSocket tmp = null;
-
+        this.applicationContext = applicationContext;
         try {
             tmp = device.createRfcommSocketToServiceRecord(myUUID);
         } catch (IOException e) {
@@ -56,7 +58,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                 BluetoothFragment.discoveryOrDisconnectButton.setOnClickListener((view) -> disconnectBluetooth());
                 BluetoothFragment.discoveryCountdownTextView.setText("");
 
-                BluetoothFragment.output = new TextView(MainActivity.context);
+                BluetoothFragment.output = new TextView(applicationContext);
                 BluetoothFragment.bluetoothScrollViewLayout.addView(BluetoothFragment.output);
             });
 
@@ -71,7 +73,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                 while ((message = br.readLine()) != null) {
                     System.out.println("##########ricevuto: " + message);
                     if (BluetoothFragment.output == null) {
-                        BluetoothFragment.output = new TextView(MainActivity.context);
+                        BluetoothFragment.output = new TextView(applicationContext);
                         BluetoothFragment.bluetoothScrollViewLayout.addView(BluetoothFragment.output);
                     }
                     final String msgToLambda = message;
@@ -81,9 +83,9 @@ public class BluetoothConnect extends MainActivity implements Runnable {
                 }
             } catch (Exception e) {
                 if (!ignoreInstreamInterruption) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconesso", "Instrem interrupted: disconnected"));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconesso", "Instrem interrupted: disconnected", applicationContext));
                 }
-                BluetoothFragment.resetDiscoveryOrDisconnectButtonState();
+                BluetoothFragment.resetDiscoveryOrDisconnectButtonState(applicationContext);
                 outStream = null;
             }
         } catch (Exception e) {
@@ -93,7 +95,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
             } catch (IOException closeException) {
                 new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", BluetoothFragment.root, false));
             }
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage()));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage(), applicationContext));
         }
     }
 
@@ -122,15 +124,15 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         }
     }
 
-    public static void sendCustomCommand(View view) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.context, R.style.DialogTheme);
+    public static void sendCustomCommand(View view, Context applicationContext) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(applicationContext, R.style.DialogTheme);
         dialog.setTitle("Command parameters");
         dialog.setMessage("Type in the prefix then the command e.g. (221, 1)");
 
-        LinearLayout layout = new LinearLayout(MainActivity.context);
+        LinearLayout layout = new LinearLayout(applicationContext);
         layout.setOrientation(LinearLayout.VERTICAL); //se non si imposta questa roba puoi mostrare solo una view alla volta
 
-        EditText prefixInput = new EditText(MainActivity.context);
+        EditText prefixInput = new EditText(applicationContext);
         prefixInput.setTextColor(Color.WHITE);
         prefixInput.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -139,7 +141,7 @@ public class BluetoothConnect extends MainActivity implements Runnable {
         prefixInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL); //per mettere solo l'input a decimale
 
         layout.addView(prefixInput);
-        EditText cmdInput = new EditText(MainActivity.context);
+        EditText cmdInput = new EditText(applicationContext);
         cmdInput.setTextColor(Color.WHITE);
         cmdInput.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

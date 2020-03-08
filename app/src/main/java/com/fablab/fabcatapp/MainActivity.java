@@ -39,7 +39,6 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
-    public static Context context;
     private static String currentPermissionRequest;
     private static boolean canCreateSnackBar = true;
 
@@ -50,37 +49,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(BluetoothConnect::sendCustomCommand); //equivale a (view) -> BluetoothConnect.sendCustomCommand(view);
+        fab.setOnClickListener((view) -> BluetoothConnect.sendCustomCommand(view, this)); //equivale a (view) -> BluetoothConnect.sendCustomCommand(view);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_bluetooth, R.id.nav_home, R.id.nav_options)
-                .setDrawerLayout(drawer)
-                .build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_bluetooth, R.id.nav_home, R.id.nav_options).setDrawerLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         preInitPermissionCheck();
-
-        context = this;
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        OptionsFragment.fetchSettings();
-        if (OptionsFragment.isAppFirstRun()) {
-            OptionsFragment.setPreferencesBoolean("isAppFirstRun", false);
+        OptionsFragment.fetchSettings(this);
+        if (OptionsFragment.isAppFirstRun(this)) {
+            OptionsFragment.setPreferencesBoolean("isAppFirstRun", false, this);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -164,15 +155,15 @@ public class MainActivity extends AppCompatActivity {
     public void exitDueTo(@NonNull String cause) {
         switch (cause) {
             case "GPS_PERMISSION": {
-                new AlertDialog.Builder(context).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al GPS per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al GPS per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
             break;
             case "BLUETOOTH_PERMISSION": {
-                new AlertDialog.Builder(context).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al bluetooth per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al bluetooth per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
             break;
             case "UNKNOWN_PERMISSION_ERROR": {
-                new AlertDialog.Builder(context).setTitle("Errore critico").setMessage("A causa di un errore sconosciuto nella richiesta dei permessi l'app non puó funzionare. É necessario un riavvio.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Errore critico").setMessage("A causa di un errore sconosciuto nella richiesta dei permessi l'app non puó funzionare. É necessario un riavvio.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
 
             break;
@@ -200,26 +191,26 @@ public class MainActivity extends AppCompatActivity {
         }, 1000);
     }
 
-    public static void createOverlayAlert(String title, String message) {
-        if (MainActivity.context != null) {
-            new AlertDialog.Builder(MainActivity.context, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
+    public static void createOverlayAlert(String title, String message, Context applicationContext) {
+        if (applicationContext != null) {
+            new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
         }
     }
 
-    public static void createCriticalErrorAlert(String title, String message) {
-        new AlertDialog.Builder(MainActivity.context, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Riavvia", (dialog, which) -> {
+    public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
+        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Riavvia", (dialog, which) -> {
                     android.os.Process.killProcess(android.os.Process.myPid());
                     System.exit(1);
                 }
         ).show();
     }
 
-    public static void hideKeyboardFrom(Context context, View view) {
+    public static void hideKeyboardFrom(Context context, View view, Context applicationContext) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } else {
-            createOverlayAlert("Errore", "Abbiamo riscontrato un errore nella rimozione della tastiera.");
+            createOverlayAlert("Errore", "Abbiamo riscontrato un errore nella rimozione della tastiera.", applicationContext);
         }
     }
 
@@ -233,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 v.getGlobalVisibleRect(outRect);
                 if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
-                    hideKeyboardFrom(this, v);
+                    hideKeyboardFrom(this, v, getApplicationContext());
                 }
             }
         }

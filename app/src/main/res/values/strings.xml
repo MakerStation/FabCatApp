@@ -45,4 +45,6 @@
     <string name="all_motors_90_degrees">All motors 90 degrees</string>
     <string name="straight_leg">Straight leg</string>
     <string name="crouched_position">Crouched position</string>
+    <string name="logo_makerstation">Logo makerstation</string>
+    <string name="OFF">OFF</string>
 </resources>

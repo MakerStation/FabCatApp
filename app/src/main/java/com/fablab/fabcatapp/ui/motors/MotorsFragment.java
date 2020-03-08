@@ -3,10 +3,13 @@ package com.fablab.fabcatapp.ui.motors;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,7 +26,8 @@ public class MotorsFragment extends Fragment {
     private ArrayList<Button> motorDecrementButtons = new ArrayList<>();
     private int[] views = {R.id.headDegrees, R.id.neckDegrees, R.id.tailDegrees, R.id.frontLeftShoulderDegrees, R.id.frontRightShoulderDegrees, R.id.frontLeftKneeDegrees, R.id.frontRightKneeDegrees, R.id.backLeftShoulderDegrees, R.id.backRightShoulderDegrees, R.id.backLeftKneeDegrees, R.id.backRightKneeDegrees};
 
-    @SuppressLint("ClickableViewAccessibility") //l'app non é indirizzata a persone cieche
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+    //l'app non é indirizzata a persone cieche
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_motors, container, false);
 
@@ -60,6 +64,19 @@ public class MotorsFragment extends Fragment {
         motorIncrementButtons.add(root.findViewById(R.id.backRightKneeIncrementButton));
         motorDecrementButtons.add(root.findViewById(R.id.backRightKneeDecrementButton));
 
+        for (int i = 0; i < views.length; i++) {
+            TextView currentDegreesView = root.findViewById(views[i]);
+            if (motorPositions[i] == -1) {
+                currentDegreesView.setText(R.string.OFF);
+                motorIncrementButtons.get(i).setEnabled(false);
+                motorDecrementButtons.get(i).setEnabled(false);
+            } else {
+                currentDegreesView.setText(motorPositions[i] + "");
+                motorIncrementButtons.get(i).setEnabled(true);
+                motorDecrementButtons.get(i).setEnabled(true);
+            }
+        }
+
         for (int i = 0; i < motorIncrementButtons.size(); i++) {
             final int j = i;
             motorIncrementButtons.get(i).setOnTouchListener((v, event) -> {
@@ -90,6 +107,18 @@ public class MotorsFragment extends Fragment {
             });
         }
 
+        setHasOptionsMenu(true);
+
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.add("Reset all Threads").setOnMenuItemClickListener((menuItem) -> {
+            BluetoothConnect.cat.stopAllMovementThreads();
+
+            return false;
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

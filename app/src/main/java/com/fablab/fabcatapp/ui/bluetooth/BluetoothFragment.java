@@ -1,6 +1,7 @@
 package com.fablab.fabcatapp.ui.bluetooth;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,13 +46,13 @@ public class BluetoothFragment extends Fragment {
             discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
                 BluetoothFragment.bluetoothScrollViewLayout.removeAllViews();
-                BluetoothDiscovery bluetooth = new BluetoothDiscovery();
+                BluetoothDiscovery bluetooth = new BluetoothDiscovery(getContext());
                 try {
                     if (!bluetooth.bluetoothDiscovery.isAlive()) {
                         bluetooth.bluetoothDiscovery.start();
                     }
                 } catch (Exception e) {
-                    TextView errorMsg = new TextView(MainActivity.context);
+                    TextView errorMsg = new TextView(getContext());
                     errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -71,17 +72,17 @@ public class BluetoothFragment extends Fragment {
         return root;
     }
     @SuppressLint("SetTextI18n")
-    public static void resetDiscoveryOrDisconnectButtonState() {
+    public static void resetDiscoveryOrDisconnectButtonState(Context applicationContext) {
         BluetoothFragment.discoveryOrDisconnectButton.post(() -> {
             BluetoothFragment.discoveryOrDisconnectButton.setText("Scansiona dispositivi");
             BluetoothFragment.discoveryOrDisconnectButton.setOnClickListener((v) -> {
-                BluetoothDiscovery bluetooth = new BluetoothDiscovery();
+                BluetoothDiscovery bluetooth = new BluetoothDiscovery(applicationContext);
                 try {
                     if (!bluetooth.bluetoothDiscovery.isAlive()) {
                         bluetooth.bluetoothDiscovery.start();
                     }
                 } catch (Exception e) {
-                    TextView errorMsg = new TextView(MainActivity.context);
+                    TextView errorMsg = new TextView(applicationContext);
                     errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT

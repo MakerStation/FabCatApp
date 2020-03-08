@@ -19,6 +19,7 @@ public class cat {
     private final byte ON = (byte) 1;
     private final byte OFF = (byte) 0;
     private SparseArray<Timer> motorMovementTimer = new SparseArray<>();
+    private int[][] positions = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120}};
 
     public void reset(View callingView) {
         BluetoothConnect.sendData(callingView, FUNCTIONSPREFIX, (byte) 1);
@@ -60,11 +61,20 @@ public class cat {
 
     public void function(View callingView, int function) {
         BluetoothConnect.sendData(callingView, FUNCTIONSPREFIX, (byte) function);
+        MotorsFragment.motorPositions = positions[function];
     }
 
     public void stopMovement(int motorId) {
         if (motorMovementTimer.get(motorId) != null) { //se non si é connessi questo é nullo
             motorMovementTimer.get(motorId).cancel();
+        }
+    }
+
+    public void stopAllMovementThreads() {
+        for (int i = 0; i < motorMovementTimer.size(); i++) {
+            if (motorMovementTimer.get(i) != null) {
+                motorMovementTimer.get(i).cancel();
+            }
         }
     }
 }
