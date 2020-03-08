@@ -25,7 +25,7 @@ public class cat {
     }
 
     public void activatePitchRoll(View view) {
-        byte delay = (byte) Math.round(OptionsFragment.pitchRollDelay /25);
+        byte delay = (byte) Math.round(OptionsFragment.pitchRollDelay /25.0); //25 da un warning di floating point con int
         if (delay == (byte) 0) {
             delay = (byte) 1;
         }

@@ -34,10 +34,14 @@ import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     public static Context context;
     private static String currentPermissionRequest;
+    private static boolean canCreateSnackBar = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,18 +180,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void createAlert(String message, View view, boolean wait) {
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        if (wait) {
-            waitForSnackBarClosure();
+        if (canCreateSnackBar) {
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            if (wait) {
+                waitForSnackBarClosure();
+            }
         }
     }
 
     private static void waitForSnackBarClosure() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            MainActivity.createCriticalErrorAlert("Errore critico", "Abbiamo riscontrato un errore critico ed é necessario riavviare l'applicazione.");
-        }
+        //se facciamo thread.sleep il touch si disabilita ma nemmeno la snackbar salta fuori
+        canCreateSnackBar = false;
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                canCreateSnackBar = true;
+            }
+        }, 1000);
     }
 
     public static void createOverlayAlert(String title, String message) {
@@ -218,10 +228,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if ( v instanceof EditText) {
+            if (v instanceof EditText) {
                 Rect outRect = new Rect();
                 v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     hideKeyboardFrom(this, v);
                 }
