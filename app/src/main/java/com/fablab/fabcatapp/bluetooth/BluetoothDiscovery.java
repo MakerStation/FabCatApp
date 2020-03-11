@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +20,6 @@ import androidx.core.content.ContextCompat;
 
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
-import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +31,17 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
     public static int countdown;
     private static boolean isDiscoveryRunning = false;
     private Context applicationContext;
+    private View bluetoothFragmentRoot;
+    private LinearLayout bluetoothScrollViewLayout;
+    private TextView discoveryCountdownTextView;
+    public BluetoothConnect connect;
 
-    public BluetoothDiscovery(Context applicationContext) {
+
+    public BluetoothDiscovery(Context applicationContext, View bluetoothFragmentRoot) {
         this.applicationContext = applicationContext;
+        this.bluetoothFragmentRoot = bluetoothFragmentRoot;
+        this.bluetoothScrollViewLayout = bluetoothFragmentRoot.findViewById(R.id.devicesLayout);
+        this.discoveryCountdownTextView = bluetoothFragmentRoot.findViewById(R.id.discoveryCountdown);
     }
 
     private BluetoothAdapter getAdapter() {
@@ -65,8 +73,6 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                     if (device != null) {
                         System.out.println("Device found: " + device.getName() + "; MAC " + device.getAddress());
                         availableDevices.add(device);
-                    } else {
-                        System.out.println("***DISPOSITIVO NULLO TROVATO, LO IGNORIAMO...");
                     }
                 }
             }
@@ -84,18 +90,18 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
         return new ArrayList<>(pairedDevices);
     }
 
-    private void displayDevices(ArrayList<BluetoothDevice> pairedevices, ArrayList<BluetoothDevice> availableDevices, BluetoothAdapter adapter) {
-        BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.removeAllViews());
+    private void displayDevices(ArrayList<BluetoothDevice> pairedDevices, ArrayList<BluetoothDevice> availableDevices, BluetoothAdapter adapter) {
+        bluetoothScrollViewLayout.post(() -> bluetoothScrollViewLayout.removeAllViews());
         StringBuilder textToDisplay = new StringBuilder();
         StringBuilder bluetoothNotices = new StringBuilder();
         ArrayList<String> macList = new ArrayList<>();
         ArrayList<BluetoothDevice> pairedAndAvailableDevices = new ArrayList<>();
 
         if(availableDevices.size() == 0) {
-            textToDisplay.append("Nessun dispositivo disponibile nelle vicinanze, verificare che sia visibile.\n");
-            bluetoothNotices.append("Nessun dispositivo disponibile nelle vicinanze, verificare che sia visibile.\n");
+            textToDisplay.append("No devices available, make sure the device is visible.\n");
+            bluetoothNotices.append("No devices available, make sure the device is visible.\n");
         } else {
-            textToDisplay.append("Dispositivi disponibili: \n");
+            textToDisplay.append("Devices available: \n");
             for (BluetoothDevice device : availableDevices) {
                 macList.add(device.getAddress());
                 String deviceInfo = "Nome: " + device.getName() + " MAC: " + device.getAddress() + "\n";
@@ -103,12 +109,12 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
             }
         }
 
-        if (pairedevices.size() == 0) {
-            textToDisplay.append("Nessun dispositivo associato trovato, associarne uno.\n");
-            bluetoothNotices.append("Nessun dispositivo associato trovato, associarne uno.\n");
+        if (pairedDevices.size() == 0) {
+            textToDisplay.append("No devices available, pair one.\n");
+            bluetoothNotices.append("No devices available, pair one.\n");
         } else {
-            textToDisplay.append("Dispositivi associati: \n");
-            for (BluetoothDevice device : pairedevices) {
+            textToDisplay.append("Devices paired: \n");
+            for (BluetoothDevice device : pairedDevices) {
                 String deviceInfo = "Nome: " + device.getName() + " MAC: " + device.getAddress() + "\n";
                 textToDisplay.append(deviceInfo);
                 if (macList.contains(device.getAddress())) {
@@ -119,17 +125,17 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
         }
 
         if (pairedAndAvailableDevices.size() == 0) {
-            textToDisplay.append("Devi associarti ad un dispositivo per connettertici.\n");
-            bluetoothNotices.append("Devi associarti ad un dispositivo per connettertici.\n");
+            textToDisplay.append("You have to pair to a device to connect to it.\n");
+            bluetoothNotices.append("You have to pair to a device to connect to it.\n");
         } else {
-            textToDisplay.append("Dispositivi a cui puoi connetterti: \n");
+            textToDisplay.append("Devices you can connect to: \n");
             for (BluetoothDevice device : pairedAndAvailableDevices) {
                 String currentName = device.getName() + '\n';
                 textToDisplay.append(currentName);
             }
         }
 
-        String txt = "Available: " + availableDevices.size() + " Paired: " + pairedevices.size() + " total: " + pairedAndAvailableDevices.size() + " discovering: " + adapter.isDiscovering();
+        String txt = "Available: " + availableDevices.size() + " Paired: " + pairedDevices.size() + " total: " + pairedAndAvailableDevices.size() + " discovering: " + adapter.isDiscovering();
         textToDisplay.append(txt);
 
         if (PreferenceManager.getDefaultSharedPreferences(applicationContext).getBoolean("debug", false)) {
@@ -139,7 +145,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
             textViewToDisplay.setText(textToDisplay);
-            BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(textViewToDisplay));
+            bluetoothScrollViewLayout.post(() -> bluetoothScrollViewLayout.addView(textViewToDisplay));
         } else {
             TextView bluetoothNoticesView = new TextView(applicationContext);
             bluetoothNoticesView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -147,7 +153,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
             bluetoothNoticesView.setText(bluetoothNotices);
-            BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(bluetoothNoticesView));
+            bluetoothScrollViewLayout.post(() -> bluetoothScrollViewLayout.addView(bluetoothNoticesView));
         }
 
         for (BluetoothDevice device : pairedAndAvailableDevices) {
@@ -159,23 +165,23 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
 
             currentButton.setText(device.getName());
             currentButton.setOnClickListener((v) -> new Handler(Looper.getMainLooper()).post(() -> {
-                BluetoothConnect connect = new BluetoothConnect(device, applicationContext);
+                connect = new BluetoothConnect(device, applicationContext, bluetoothFragmentRoot);
                 connect.connect.start();
             }));
             currentButton.setBackground(applicationContext.getDrawable(R.drawable.device_button));
             currentButton.setTextSize(15);
             LinearLayout.LayoutParams ll = (LinearLayout.LayoutParams)currentButton.getLayoutParams();
             ll.gravity = Gravity.CENTER;
+            ll.topMargin = 5;
             currentButton.setLayoutParams(ll);
-            BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(currentButton));
+            bluetoothScrollViewLayout.post(() -> bluetoothScrollViewLayout.addView(currentButton));
         }
     }
 
     @SuppressLint("SetTextI18n")
     private void startDiscovery(BluetoothAdapter adapter, BroadcastReceiver broadcastReceiver) {
-        BluetoothFragment.discoveryCountdownTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.textColorPrimary));
         if (adapter.isDiscovering()) {
-            //nel caso sia in discovery la riavviamo
+            //reboot discovery if it's already running
             adapter.cancelDiscovery();
         }
         adapter.startDiscovery();
@@ -183,16 +189,17 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
         countdown = PreferenceManager.getDefaultSharedPreferences(applicationContext).getInt("discoveryCountdown", 10);
         while (countdown > 0) {
             try {
+                discoveryCountdownTextView.post(() -> discoveryCountdownTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.textColorPrimary)));
+                discoveryCountdownTextView.post(() -> discoveryCountdownTextView.setText(countdown + (countdown == 1 ? " second left" : " seconds left")));
                 Thread.sleep(1000);
                 countdown -= 1;
-                BluetoothFragment.discoveryCountdownTextView.post(() -> BluetoothFragment.discoveryCountdownTextView.setText(BluetoothDiscovery.countdown + " seconds left"));
             } catch (InterruptedException e) {
-                System.out.println("*****INTERRUPTEDEXCEPTION: " + e.getMessage() + " " + Arrays.toString(e.getStackTrace()));
+                System.out.println("*****InterruptedException: " + e.getMessage() + " " + Arrays.toString(e.getStackTrace()));
             }
         }
-        BluetoothFragment.discoveryCountdownTextView.post(() -> {
-            BluetoothFragment.discoveryCountdownTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.scanComplete));
-            BluetoothFragment.discoveryCountdownTextView.setText("Scan complete");
+        discoveryCountdownTextView.post(() -> {
+            discoveryCountdownTextView.setTextColor(ContextCompat.getColor(applicationContext, R.color.scanComplete));
+            discoveryCountdownTextView.setText("Scan complete");
         });
         adapter.cancelDiscovery();
         applicationContext.unregisterReceiver(broadcastReceiver);
@@ -205,7 +212,7 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                 isDiscoveryRunning = true;
                 BluetoothAdapter adapter = getAdapter();
                 if (adapter == null) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Il dispositivo non supporta il Bluetooth, perció non potrá essere usato.", BluetoothFragment.root, false));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Your device doesn't support Bluetooth therefore you won't be able to use it.", bluetoothFragmentRoot, false));
                 } else {
                     try {
                         BroadcastReceiver receiver = registerListener();
@@ -213,26 +220,26 @@ public class BluetoothDiscovery extends MainActivity implements Runnable {
                         isDiscoveryRunning = false;
                         bluetoothDiscovery = null;
                     } catch (Exception e) {
-                        String message = "Stack: " + Arrays.toString(e.getStackTrace()) + " **CAUSA**: " + e.getCause() + "**MESSAGGIO**: " + e.getMessage();
+                        String message = "Stack: " + Arrays.toString(e.getStackTrace()) + " **Cause**: " + e.getCause() + "**Message**: " + e.getMessage();
                         TextView errorMsg = new TextView(applicationContext);
                         errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
                         errorMsg.setText(message);
-                        BluetoothFragment.bluetoothScrollViewLayout.post(() -> BluetoothFragment.bluetoothScrollViewLayout.addView(errorMsg));
+                        bluetoothScrollViewLayout.post(() -> bluetoothScrollViewLayout.addView(errorMsg));
 
-                        MainActivity.createAlert("Errore nell'avvio del bluetoothDiscovery. Prova a riavviare l'app. Causa: " + e.getMessage(), BluetoothFragment.root, false);
+                        MainActivity.createAlert("There was an error while starting the discovery, you can try to restart the app. Cause: " + e.getMessage(), bluetoothFragmentRoot, false);
                         isDiscoveryRunning = false;
                         bluetoothDiscovery = null;
                     }
                 }
             } else {
-                MainActivity.createAlert("Attendi la fine della scansione attuale", BluetoothFragment.root, true);
+                MainActivity.createAlert("Wait for the current running scan to finish!", bluetoothFragmentRoot, true);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-            MainActivity.createAlert("Abbiamo riscontrato un errore. Controlla che il Bluetooth sia acceso.", BluetoothFragment.root, false);
+            MainActivity.createAlert("We encountered an error, please make sure that your Bluetooth is enabled. Cause: " + e.getMessage(), bluetoothFragmentRoot, false);
             isDiscoveryRunning = false;
             bluetoothDiscovery = null;
         }

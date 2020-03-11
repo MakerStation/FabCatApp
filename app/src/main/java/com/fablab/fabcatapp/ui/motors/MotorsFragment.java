@@ -27,7 +27,7 @@ public class MotorsFragment extends Fragment {
     private int[] views = {R.id.headDegrees, R.id.neckDegrees, R.id.tailDegrees, R.id.frontLeftShoulderDegrees, R.id.frontRightShoulderDegrees, R.id.frontLeftKneeDegrees, R.id.frontRightKneeDegrees, R.id.backLeftShoulderDegrees, R.id.backRightShoulderDegrees, R.id.backLeftKneeDegrees, R.id.backRightKneeDegrees};
 
     @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
-    //l'app non é indirizzata a persone cieche
+    //app not for blind people
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_motors, container, false);
 
@@ -115,7 +115,7 @@ public class MotorsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.add("Reset all Threads").setOnMenuItemClickListener((menuItem) -> {
-            BluetoothConnect.cat.stopAllMovementThreads();
+            BluetoothConnect.cat.stopAllMovementThreads(getView());
 
             return false;
         });

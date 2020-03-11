@@ -11,7 +11,7 @@
                 android:title="@string/menu_home" />
         </menu>
     </item>
-    <item android:title="@string/connessione">
+    <item android:title="@string/connectivity">
         <menu>
             <item
                 android:id="@+id/nav_bluetooth"
@@ -19,15 +19,15 @@
                 android:title="@string/bluetooth" />
         </menu>
     </item>
-    <item android:title="@string/configurazione">
+    <item android:title="@string/configuration">
         <menu>
             <item
                 android:id="@+id/nav_options"
                 android:icon="@drawable/ic_settings"
-                android:title="@string/impostazioni" />
+                android:title="@string/configuration" />
         </menu>
     </item>
-    <item android:title="@string/gatto">
+    <item android:title="@string/cat">
         <menu>
             <item
                 android:id="@+id/nav_motors"
@@ -37,6 +37,10 @@
                 android:id="@+id/nav_positions"
                 android:icon="@drawable/ic_controls"
                 android:title="@string/positions" />
+            <item
+                android:id="@+id/nav_functions"
+                android:icon="@drawable/ic_functions"
+                android:title="@string/functions" />
         </menu>
     </item>
 

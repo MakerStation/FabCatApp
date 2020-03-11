@@ -1,11 +1,13 @@
 package com.fablab.fabcatapp.cat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
+import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
 import com.fablab.fabcatapp.ui.motors.MotorsFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
@@ -14,23 +16,35 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class cat {
-    private final byte FUNCTIONSPREFIX = (byte) 221;
-    private final byte TOGGLEFUNCTIONSPREFIX = (byte) 222;
-    private final byte ON = (byte) 1;
-    private final byte OFF = (byte) 0;
+    private TextView pitchTextView, rollTextView;
     private SparseArray<Timer> motorMovementTimer = new SparseArray<>();
-    private int[][] positions = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120}};
-
-    public void reset(View callingView) {
-        BluetoothConnect.sendData(callingView, FUNCTIONSPREFIX, (byte) 1);
-    }
+    private int[][] positions = {
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},           // shutdown
+            {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120},       // start position
+            {90, 90, 90, 80, 80, 80, 80, 112, 112, 112, 112},       // calibration position
+            {90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90},           // all motors 90 degrees
+            {90, 90, 90, 80, 80, 80, 80, 40, 40, 40, 40},           // straight legs
+            {90, 150, 120, 20, 18, 20, 20, 168, 170, 168, 168}};    // crouched position
 
     public void activatePitchRoll(View view) {
-        byte delay = (byte) Math.round(OptionsFragment.pitchRollDelay /25.0); //25 da un warning di floating point con int
+        byte delay = (byte) Math.round(OptionsFragment.pitchRollDelay /25.0); //25 throws a floating point with int division
         if (delay == (byte) 0) {
             delay = (byte) 1;
         }
-        BluetoothConnect.sendData(view, TOGGLEFUNCTIONSPREFIX, ON, delay);
+        BluetoothConnect.sendData(view, (byte) 222, (byte) 1, delay);
+        pitchTextView = view.findViewById(R.id.pitchTextView);
+        rollTextView = view.findViewById(R.id.rollTextView);
+    }
+
+    public void pitchRollChanged(String pitch, String roll, Context applicationContext) {
+        if (pitchTextView != null && rollTextView != null) {
+            pitchTextView.post(() -> {
+                pitchTextView.setText(pitch);
+                rollTextView.setText(roll);
+            });
+        } else {
+            MainActivity.createOverlayAlert("Error", "There was an error while updating the pitch & roll values, you can try restarting the app.", applicationContext);
+        }
     }
 
     public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate) {
@@ -41,7 +55,7 @@ public class cat {
                 @Override
                 public void run() {
                     if ((MotorsFragment.motorPositions[motorId] == 180 && increment) || (MotorsFragment.motorPositions[motorId] == 0 && !increment)) {
-                        MainActivity.createAlert("Limite raggiunto!", callingView, true);
+                        MainActivity.createAlert("Limit reached!", callingView, true);
                     } else if (increment) {
                         MotorsFragment.motorPositions[motorId]++;
                         BluetoothConnect.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
@@ -60,21 +74,31 @@ public class cat {
     }
 
     public void function(View callingView, int function) {
-        BluetoothConnect.sendData(callingView, FUNCTIONSPREFIX, (byte) function);
+        BluetoothConnect.sendData(callingView, (byte) 221, (byte) function);
         MotorsFragment.motorPositions = positions[function];
     }
 
+    public void toggleFunction(View callingView, int function) {
+        BluetoothConnect.sendData(callingView, (byte) 222, (byte) function);
+    }
+
     public void stopMovement(int motorId) {
-        if (motorMovementTimer.get(motorId) != null) { //se non si é connessi questo é nullo
+        if (motorMovementTimer.get(motorId) != null) {
             motorMovementTimer.get(motorId).cancel();
+            motorMovementTimer.remove(motorId);
         }
     }
 
-    public void stopAllMovementThreads() {
-        for (int i = 0; i < motorMovementTimer.size(); i++) {
-            if (motorMovementTimer.get(i) != null) {
-                motorMovementTimer.get(i).cancel();
+    public void stopAllMovementThreads(View callingView) {
+        for(int i = 0; i < motorMovementTimer.size(); i++) {
+            int key = motorMovementTimer.keyAt(i);
+
+            if (motorMovementTimer.get(key) != null) {
+                motorMovementTimer.get(key).cancel();
+            } else {
+                MainActivity.createAlert("Couldn't terminate Timer, Timer is null.", callingView, true);
             }
         }
+        motorMovementTimer.clear();
     }
 }

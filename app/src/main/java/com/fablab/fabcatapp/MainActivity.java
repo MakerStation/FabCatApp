@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener((view) -> BluetoothConnect.sendCustomCommand(view, this)); //equivale a (view) -> BluetoothConnect.sendCustomCommand(view);
+        fab.setOnClickListener((view) -> BluetoothConnect.sendCustomCommand(view, this)); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -84,16 +84,16 @@ public class MainActivity extends AppCompatActivity {
     }
     private void preInitPermissionCheck() {
         if (!checkLocationPermission()) {
-            System.out.println("*****PERMESSO GPS NON AVUTO");
+            System.out.println("*****GPS PERMISSION NOT RECEIVED");
             currentPermissionRequest = "GPS";
-            ActivityCompat.requestPermissions(this, new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION //AGGIUNGI PERMESSO A MANIFEST SEMPRE
+            ActivityCompat.requestPermissions(this, new String[]{ //always add permission to manifest.xml
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
             }, 1);
         } else {
-            System.out.println("*****PERMESSO GPS AVUTO");
+            System.out.println("*****GPS PERMISSION RECEIVED");
         }
         if (!checkBluetoothPermission()) {
-            System.out.println("******PERMESSO DEL BLUETOOTH NON AVUTO");
+            System.out.println("******BLUETOOTH PERMISSION NOT RECEIVED");
             currentPermissionRequest = "BLUETOOTH";
             ActivityCompat.requestPermissions(this, new String[] {
                     Manifest.permission.BLUETOOTH
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.BLUETOOTH_ADMIN
             }, 1);
         } else {
-            System.out.println("****PERMESSO BLUETOOTH AVUTO");
+            System.out.println("****BLUETOOTH PERMISSION RECEIVED");
         }
     }
 
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        System.out.println("*****CONTROLLO PERMESSI ESEGUITO");
+        System.out.println("*****PERMISSION CHECK DONE");
 
         if (requestCode == 1) {
 
@@ -155,15 +155,15 @@ public class MainActivity extends AppCompatActivity {
     public void exitDueTo(@NonNull String cause) {
         switch (cause) {
             case "GPS_PERMISSION": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al GPS per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Start failure").setMessage("The app requires the GPS to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
             break;
             case "BLUETOOTH_PERMISSION": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Avvio fallito").setMessage("L'app necessita l'accesso al bluetooth per funzionare.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Start failure").setMessage("The app requires the Bluetooth to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
             break;
             case "UNKNOWN_PERMISSION_ERROR": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Errore critico").setMessage("A causa di un errore sconosciuto nella richiesta dei permessi l'app non puó funzionare. É necessario un riavvio.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Critical error").setMessage("Due to an unknown error in the permission request the app can't work. A restart is necessary.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
             }
 
             break;
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void waitForSnackBarClosure() {
-        //se facciamo thread.sleep il touch si disabilita ma nemmeno la snackbar salta fuori
+        //if we do thread.sleep the touch is disabled, but the snackBar doesn't pop out
         canCreateSnackBar = false;
 
         new Timer().schedule(new TimerTask() {
@@ -197,25 +197,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
-        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Riavvia", (dialog, which) -> {
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                    System.exit(1);
-                }
-        ).show();
-    }
+//    public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
+//        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
+//                    android.os.Process.killProcess(android.os.Process.myPid());
+//                    System.exit(1);
+//                }
+//        ).show();
+//    }
 
     public static void hideKeyboardFrom(Context context, View view, Context applicationContext) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } else {
-            createOverlayAlert("Errore", "Abbiamo riscontrato un errore nella rimozione della tastiera.", applicationContext);
+            createOverlayAlert("Error", "We encountered an error while removing the keyboard.", applicationContext);
         }
     }
 
-
-    @Override //quando si clicca fuori da un edittext perde focus e chiama l'event listener
+    @Override //when you click out of an EditText, it loses focus and it calls the event listener
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
