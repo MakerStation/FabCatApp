@@ -1,6 +1,5 @@
 package com.fablab.fabcatapp.ui.bluetooth;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -66,7 +65,7 @@ public class BluetoothFragment extends Fragment {
 
         Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
         if (connected) {
-            discoveryOrDisconnectButton.setText(R.string.Disconnect);
+            discoveryOrDisconnectButton.setText(R.string.disconnect);
             discoveryOrDisconnectButton.setOnClickListener((v) -> disconnectBluetooth(root));
         } else {
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
@@ -189,13 +188,11 @@ public class BluetoothFragment extends Fragment {
 
     private BroadcastReceiver registerListener() {
         BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @SuppressLint("SetTextI18n")
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (device != null) {
-                        System.out.println("Device found: " + device.getName() + "; MAC " + device.getAddress());
                         availableDevices.add(device);
                     }
                 }
@@ -451,12 +448,11 @@ public class BluetoothFragment extends Fragment {
         dialog.show();
     }
 
-    @SuppressLint("SetTextI18n")
     private void setDiscoveryOrDisconnectButtonState(boolean discoveryOrDisconnect) {
         LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
         Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
         if (discoveryOrDisconnect) {
-            discoveryOrDisconnectButton.post(() -> discoveryOrDisconnectButton.setText("Scan devices"));
+            discoveryOrDisconnectButton.post(() -> discoveryOrDisconnectButton.setText(getString(R.string.scan_devices)));
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
                 bluetoothScrollViewLayout.removeAllViews();
                 try {
@@ -469,14 +465,14 @@ public class BluetoothFragment extends Fragment {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     ));
-                    errorMsg.setText("M: " + e.getMessage() + " Stack: " + Arrays.toString(e.getStackTrace()));
+                    errorMsg.setText(getString(R.string.exception, e.getMessage(), Arrays.toString(e.getStackTrace())));
                     bluetoothScrollViewLayout.addView(errorMsg);
 
                     MainActivity.createAlert("We encountered an error while scanning, you can try to restart the app.", root, false);
                 }
             });
         } else {
-            discoveryOrDisconnectButton.setText("Disconnect");
+            discoveryOrDisconnectButton.setText(getString(R.string.disconnect));
             if (connected) {
                 discoveryOrDisconnectButton.setOnClickListener((v) -> disconnectBluetooth(root));
             } else {

@@ -27,7 +27,7 @@ public class MotorsFragment extends Fragment {
     private ArrayList<Button> motorDecrementButtons = new ArrayList<>();
     private int[] views = {R.id.headDegrees, R.id.neckDegrees, R.id.tailDegrees, R.id.frontLeftShoulderDegrees, R.id.frontRightShoulderDegrees, R.id.frontLeftKneeDegrees, R.id.frontRightKneeDegrees, R.id.backLeftShoulderDegrees, R.id.backRightShoulderDegrees, R.id.backLeftKneeDegrees, R.id.backRightKneeDegrees};
 
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+    @SuppressLint("ClickableViewAccessibility")
     //app not for blind people
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_motors, container, false);
@@ -72,7 +72,7 @@ public class MotorsFragment extends Fragment {
                 motorIncrementButtons.get(i).setEnabled(false);
                 motorDecrementButtons.get(i).setEnabled(false);
             } else {
-                currentDegreesView.setText(motorPositions[i] + "");
+                currentDegreesView.setText(getString(R.string.empty_string, motorPositions[i]));
                 motorIncrementButtons.get(i).setEnabled(true);
                 motorDecrementButtons.get(i).setEnabled(true);
             }
@@ -84,7 +84,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j]);
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j], getContext());
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }
@@ -107,7 +107,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j]);
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j], getContext());
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }

@@ -62,7 +62,7 @@
     <string name="countdown_one">%d second left</string>
     <string name="countdown_other">%d seconds left</string>
     <string name="logo">Logo</string>
-    <string name="Disconnect">Disconnect</string>
+    <string name="disconnect">Disconnect</string>
     <string name="exception">Cause: %s \n Stack: %s</string>
     <string name="empty_string">%d</string>
 </resources>

@@ -1,11 +1,12 @@
 package com.fablab.fabcatapp.cat;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
+import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.motors.MotorsFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
@@ -37,11 +38,10 @@ public class Cat {
         pitchRoll[1] = roll;
     }
 
-    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate) {
+    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate, Context applicationContext) {
         if (BluetoothFragment.checkConnection(callingView)) {
             TextView currentTextView = callingView.findViewById(viewToUpdate);
             TimerTask task = new TimerTask() {
-                @SuppressLint("SetTextI18n")
                 @Override
                 public void run() {
                     if ((MotorsFragment.motorPositions[motorId] == 180 && increment) || (MotorsFragment.motorPositions[motorId] == 0 && !increment)) {
@@ -49,11 +49,11 @@ public class Cat {
                     } else if (increment) {
                         MotorsFragment.motorPositions[motorId]++;
                         BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(MotorsFragment.motorPositions[motorId] + ""));
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(R.string.empty_string, MotorsFragment.motorPositions[motorId])));
                     } else {
                         MotorsFragment.motorPositions[motorId]--;
                         BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(MotorsFragment.motorPositions[motorId] + ""));
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(R.string.empty_string, MotorsFragment.motorPositions[motorId])));
                     }
                 }
             };
