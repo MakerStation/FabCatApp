@@ -32,6 +32,7 @@ import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.cat.Cat;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,6 +61,9 @@ public class BluetoothFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
+
+        FloatingActionButton fab = root.findViewById(R.id.fab);
+        fab.setOnClickListener((view) -> BluetoothFragment.sendCustomCommand(view, getContext()));
 
         LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
 

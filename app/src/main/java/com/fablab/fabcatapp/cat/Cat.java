@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
-import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.motors.MotorsFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;

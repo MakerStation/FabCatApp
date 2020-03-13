@@ -12,10 +12,14 @@ import androidx.fragment.app.Fragment;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class PositionsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_positions, container, false);
+
+        FloatingActionButton fab = root.findViewById(R.id.fab);
+        fab.setOnClickListener((view) -> BluetoothFragment.sendCustomCommand(view, getContext())); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
 
         Button shutdownButton = root.findViewById(R.id.shutdownButton);
         Button startButton = root.findViewById(R.id.startButton);

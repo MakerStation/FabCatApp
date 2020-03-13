@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,6 +25,9 @@ public class FunctionsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_functions, container, false);
+
+        FloatingActionButton fab = root.findViewById(R.id.fab);
+        fab.setOnClickListener((view) -> BluetoothFragment.sendCustomCommand(view, getContext())); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
 
         ToggleButton pitchRollButton = root.findViewById(R.id.pitchRollToggleButton);
         pitchRollButton.setOnCheckedChangeListener((v, checked) -> {

@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
@@ -25,6 +27,9 @@ public class OptionsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_options, container, false);
+
+        FloatingActionButton fab = root.findViewById(R.id.fab);
+        fab.setOnClickListener((view) -> BluetoothFragment.sendCustomCommand(view, getContext())); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
 
         EditText pitchRollDelay = root.findViewById(R.id.pitchRollDelayEditText);
         pitchRollDelay.setText(getString(R.string.empty_string_int, getPreferencesInt("pitchRollDelay", getContext())));
