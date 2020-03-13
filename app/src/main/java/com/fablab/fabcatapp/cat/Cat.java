@@ -38,7 +38,7 @@ public class Cat {
         pitchRoll[1] = roll;
     }
 
-    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate, Context applicationContext) {
+    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate, int stringResource, Context applicationContext) {
         if (BluetoothFragment.checkConnection(callingView)) {
             TextView currentTextView = callingView.findViewById(viewToUpdate);
             TimerTask task = new TimerTask() {
@@ -49,11 +49,11 @@ public class Cat {
                     } else if (increment) {
                         MotorsFragment.motorPositions[motorId]++;
                         BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(R.string.empty_string, MotorsFragment.motorPositions[motorId])));
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[motorId])));
                     } else {
                         MotorsFragment.motorPositions[motorId]--;
                         BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(R.string.empty_string, MotorsFragment.motorPositions[motorId])));
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[motorId])));
                     }
                 }
             };

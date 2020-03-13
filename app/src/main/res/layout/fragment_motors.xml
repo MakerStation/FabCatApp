@@ -20,12 +20,11 @@
 
             <TextView
                 android:id="@+id/motors"
-                android:layout_width="wrap_content"
+                android:layout_width="46dp"
                 android:layout_height="wrap_content"
                 android:text="@string/motors"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.459"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,9 +32,9 @@
                 android:id="@+id/head"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="36dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/head"
+                app:layout_constraintEnd_toStartOf="@+id/neck"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -43,9 +42,9 @@
                 android:id="@+id/frontLeftShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
                 android:layout_marginTop="120dp"
                 android:text="@string/front_left_shoulder"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightShoulder"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -53,9 +52,9 @@
                 android:id="@+id/backLeftShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
                 android:layout_marginTop="328dp"
                 android:text="@string/back_left_shoulder"
+                app:layout_constraintEnd_toStartOf="@+id/backRightShoulder"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -63,19 +62,19 @@
                 android:id="@+id/backRightShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="184dp"
                 android:layout_marginTop="328dp"
                 android:text="@string/back_right_shoulder"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backLeftShoulder"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
             <TextView
                 android:id="@+id/frontLeftKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="54dp"
                 android:layout_marginTop="224dp"
                 android:text="@string/front_left_knee"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightKnee"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -83,9 +82,9 @@
                 android:id="@+id/backLeftKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="52dp"
                 android:layout_marginTop="428dp"
                 android:text="@string/back_left_knee"
+                app:layout_constraintEnd_toStartOf="@+id/backRightKnee"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -93,40 +92,31 @@
                 android:id="@+id/frontRightKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="192dp"
                 android:layout_marginTop="224dp"
                 android:text="@string/front_right_knee"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftKnee"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
             <TextView
                 android:id="@+id/backRightKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="192dp"
                 android:layout_marginTop="428dp"
                 android:text="@string/back_right_knee"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backLeftKnee"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
             <TextView
                 android:id="@+id/frontRightShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="184dp"
                 android:layout_marginTop="120dp"
                 android:text="@string/front_right_shoulder"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftShoulder"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
-
-            <TextView
-                android:id="@+id/headDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
-                android:text="@string/_90"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/head" />
 
             <Button
                 android:id="@+id/headDecrementButton"
@@ -139,6 +129,7 @@
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/headIncrementButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/head" />
 
@@ -146,13 +137,14 @@
                 android:id="@+id/frontLeftShoulderDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="48dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/frontLeftShoulderIncrementButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frontLeftShoulder" />
 
@@ -160,13 +152,14 @@
                 android:id="@+id/backLeftShoulderDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="48dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/backLeftShoulderIncrementButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/backLeftShoulder" />
 
@@ -174,27 +167,29 @@
                 android:id="@+id/backRightShoulderDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="196dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/backRightShoulderIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/backLeftShoulderIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backRightShoulder" />
 
             <Button
                 android:id="@+id/frontLeftKneeDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="48dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/frontLeftKneeIncrementButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frontLeftKnee" />
 
@@ -202,13 +197,14 @@
                 android:id="@+id/backLeftKneeDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="48dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/backLeftKneeIncrementButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/backLeftKnee" />
 
@@ -216,233 +212,251 @@
                 android:id="@+id/frontRightKneeDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="196dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightKneeIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftKneeIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontRightKnee" />
 
             <Button
                 android:id="@+id/backRightKneeDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="188dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/backRightKneeIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/backLeftKneeIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backRightKnee" />
 
             <Button
                 android:id="@+id/frontRightShoulderDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="196dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightShoulderIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftShoulderIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontRightShoulder" />
 
             <Button
                 android:id="@+id/neckDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="128dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/neckIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/headIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/neck" />
 
             <Button
                 android:id="@+id/tailDecrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="252dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorDecrementButton"
                 android:text="@string/minus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tailIncrementButton"
+                app:layout_constraintStart_toEndOf="@+id/neckIncrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/tail" />
 
             <Button
                 android:id="@+id/headIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="64dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/neckDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/headDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/head" />
 
             <Button
                 android:id="@+id/frontLeftShoulderIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="104dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightShoulderDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftShoulderDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontLeftShoulder" />
 
             <Button
                 android:id="@+id/backLeftShoulderIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="104dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/backRightShoulderDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/backLeftShoulderDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backLeftShoulder" />
 
             <Button
                 android:id="@+id/backRightShoulderIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="252dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backRightShoulderDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backRightShoulder" />
 
             <Button
                 android:id="@+id/frontLeftKneeIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="104dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/frontRightKneeDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/frontLeftKneeDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontLeftKnee" />
 
             <Button
                 android:id="@+id/backLeftKneeIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="104dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/backRightKneeDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/backLeftKneeDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backLeftKnee" />
 
             <Button
                 android:id="@+id/frontRightKneeIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="248dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frontRightKneeDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontRightKnee" />
 
             <Button
                 android:id="@+id/backRightKneeIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="244dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backRightKneeDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/backRightKnee" />
 
             <Button
                 android:id="@+id/frontRightShoulderIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="252dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frontRightShoulderDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/frontRightShoulder" />
 
             <Button
                 android:id="@+id/neckIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="184dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tailDecrementButton"
+                app:layout_constraintStart_toEndOf="@+id/neckDecrementButton"
                 app:layout_constraintTop_toBottomOf="@+id/neck" />
 
             <Button
                 android:id="@+id/tailIncrementButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="308dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/circular_button"
                 android:backgroundTint="@color/motorIncrementButton"
                 android:text="@string/plus"
                 android:textAlignment="center"
                 android:textSize="30sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/neck" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tailDecrementButton"
+                app:layout_constraintTop_toBottomOf="@+id/tail" />
 
             <TextView
                 android:id="@+id/neck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="95dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
                 android:text="@string/neck"
+                app:layout_constraintEnd_toStartOf="@+id/tail"
                 app:layout_constraintStart_toEndOf="@+id/head"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
@@ -450,101 +464,12 @@
                 android:id="@+id/tail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="220dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/tail"
-                app:layout_constraintStart_toEndOf="@+id/head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/neck"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
-            <TextView
-                android:id="@+id/neckDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="106dp"
-                android:text="@string/_90"
-                app:layout_constraintStart_toEndOf="@+id/headDegrees"
-                app:layout_constraintTop_toBottomOf="@+id/neck" />
-
-            <TextView
-                android:id="@+id/tailDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="230dp"
-                android:text="@string/_90"
-                app:layout_constraintStart_toEndOf="@+id/headDegrees"
-                app:layout_constraintTop_toBottomOf="@+id/neck" />
-
-            <TextView
-                android:id="@+id/frontLeftShoulderDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:text="@string/_50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frontLeftShoulder" />
-
-            <TextView
-                android:id="@+id/backLeftShoulderDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:text="@string/_50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/backLeftShoulder" />
-
-            <TextView
-                android:id="@+id/backRightShoulderDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="236dp"
-                android:text="@string/_50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/backRightShoulder" />
-
-            <TextView
-                android:id="@+id/frontLeftKneeDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:text="@string/_120"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frontLeftKnee" />
-
-            <TextView
-                android:id="@+id/backLeftKneeDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:text="@string/_120"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/backLeftKnee" />
-
-            <TextView
-                android:id="@+id/frontRightKneeDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="228dp"
-                android:text="@string/_120"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frontRightKnee" />
-
-            <TextView
-                android:id="@+id/backRightKneeDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="228dp"
-                android:text="@string/_120"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/backRightKnee" />
-
-            <TextView
-                android:id="@+id/frontRightShoulderDegrees"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="236dp"
-                android:text="@string/_50"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frontRightShoulder" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

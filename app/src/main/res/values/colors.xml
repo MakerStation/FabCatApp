@@ -11,4 +11,5 @@
     <color name="motorDecrementButton">#DE3737</color>
     <color name="scanComplete">@color/colorPrimary</color>
     <color name="deviceButton">@color/colorPrimary</color>
+    <color name="positionsAndFunctionsButtonsBackground">#888888</color>
 </resources>

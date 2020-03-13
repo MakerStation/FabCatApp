@@ -27,7 +27,7 @@ public class OptionsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_options, container, false);
 
         EditText pitchRollDelay = root.findViewById(R.id.pitchRollDelayEditText);
-        pitchRollDelay.setText(getString(R.string.empty_string, getPreferencesInt("pitchRollDelay", getContext())));
+        pitchRollDelay.setText(getString(R.string.empty_string_int, getPreferencesInt("pitchRollDelay", getContext())));
         pitchRollDelay.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 try {
@@ -40,7 +40,7 @@ public class OptionsFragment extends Fragment {
         });
 
         EditText bluetoothDiscoveryCountdown = root.findViewById(R.id.bluetoothDiscoveryCountdown);
-        bluetoothDiscoveryCountdown.setText(getString(R.string.empty_string, getPreferencesInt("discoveryCountdown", getContext())));
+        bluetoothDiscoveryCountdown.setText(getString(R.string.empty_string_int, getPreferencesInt("discoveryCountdown", getContext())));
         bluetoothDiscoveryCountdown.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 try {

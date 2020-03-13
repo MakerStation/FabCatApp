@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
-import com.fablab.fabcatapp.ui.options.OptionsFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;

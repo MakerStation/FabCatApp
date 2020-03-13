@@ -30,6 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="248dp"
         android:layout_marginTop="40dp"
+        android:backgroundTint="@color/positionsAndFunctionsButtonsBackground"
+        android:buttonTint="@color/positionsAndFunctionsButtonsBackground"
         android:text="@string/pitch_roll"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,6 +41,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@color/positionsAndFunctionsButtonsBackground"
+        android:buttonTint="@color/positionsAndFunctionsButtonsBackground"
         android:text="@string/auto_balance"
         app:layout_constraintStart_toStartOf="@+id/pitchRollToggleButton"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
@@ -48,6 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:backgroundTint="@color/positionsAndFunctionsButtonsBackground"
         android:text="@string/fall_recovery"
         app:layout_constraintStart_toStartOf="@+id/autoBalanceToggleButton"
         app:layout_constraintTop_toBottomOf="@+id/autoBalanceToggleButton" />
@@ -94,10 +99,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:backgroundTint="@color/positionsAndFunctionsButtonsBackground"
+        android:contentDescription="@string/cat_image"
         app:layout_constraintEnd_toEndOf="@+id/fallRecoveryToggleButton"
         app:layout_constraintTop_toBottomOf="@+id/fallRecoveryToggleButton"
-        app:srcCompat="@drawable/ic_cat"
-        android:contentDescription="@string/cat_image"/>
+        app:srcCompat="@drawable/ic_cat" />
 
     <TextView
         android:id="@+id/pitchTextView"

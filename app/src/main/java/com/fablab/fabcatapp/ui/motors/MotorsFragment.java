@@ -25,7 +25,9 @@ public class MotorsFragment extends Fragment {
     private int[] motorNumbers = {1, 0, 2, 3, 4, 7, 8, 6, 5, 10, 9};
     private ArrayList<Button> motorIncrementButtons = new ArrayList<>();
     private ArrayList<Button> motorDecrementButtons = new ArrayList<>();
-    private int[] views = {R.id.headDegrees, R.id.neckDegrees, R.id.tailDegrees, R.id.frontLeftShoulderDegrees, R.id.frontRightShoulderDegrees, R.id.frontLeftKneeDegrees, R.id.frontRightKneeDegrees, R.id.backLeftShoulderDegrees, R.id.backRightShoulderDegrees, R.id.backLeftKneeDegrees, R.id.backRightKneeDegrees};
+    private int[] views = {R.id.head, R.id.neck, R.id.tail, R.id.frontLeftShoulder, R.id.frontRightShoulder, R.id.frontLeftKnee, R.id.frontRightKnee, R.id.backLeftShoulder, R.id.backRightShoulder, R.id.backLeftKnee, R.id.backRightKnee};
+    private int[] stringResources = {R.string.head_motor, R.string.neck_motor, R.string.tail_motor, R.string.front_left_shoulder_motor, R.string.front_right_shoulder_motor, R.string.front_left_knee_motor, R.string.front_right_knee_motor, R.string.back_left_shoulder_motor, R.string.back_right_shoulder_motor, R.string.back_left_knee_motor, R.string.back_right_knee_motor};
+    private int[] stringResourcesOff = {R.string.head_motor_off, R.string.neck_motor_off, R.string.tail_motor_off, R.string.front_left_shoulder_motor_off, R.string.front_right_shoulder_motor_off, R.string.front_left_knee_motor_off, R.string.front_right_knee_motor_off, R.string.back_left_shoulder_motor_off, R.string.back_right_shoulder_motor_off, R.string.back_left_knee_motor_off, R.string.back_right_knee_motor_off};
 
     @SuppressLint("ClickableViewAccessibility")
     //app not for blind people
@@ -68,11 +70,11 @@ public class MotorsFragment extends Fragment {
         for (int i = 0; i < views.length; i++) {
             TextView currentDegreesView = root.findViewById(views[i]);
             if (motorPositions[i] == -1) {
-                currentDegreesView.setText(R.string.OFF);
+                currentDegreesView.setText(getString(stringResourcesOff[i]));
                 motorIncrementButtons.get(i).setEnabled(false);
                 motorDecrementButtons.get(i).setEnabled(false);
             } else {
-                currentDegreesView.setText(getString(R.string.empty_string, motorPositions[i]));
+                currentDegreesView.setText(getString(stringResources[i], motorPositions[i]));
                 motorIncrementButtons.get(i).setEnabled(true);
                 motorDecrementButtons.get(i).setEnabled(true);
             }
@@ -84,7 +86,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j], getContext());
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j], stringResources[j], getContext());
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }
@@ -107,7 +109,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j], getContext());
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j], stringResources[j], getContext());
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }
