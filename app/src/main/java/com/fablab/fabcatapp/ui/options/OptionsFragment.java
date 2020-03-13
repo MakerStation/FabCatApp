@@ -1,6 +1,5 @@
 package com.fablab.fabcatapp.ui.options;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,12 +23,11 @@ public class OptionsFragment extends Fragment {
     public static SharedPreferences preferences;
     public static int pitchRollDelay;
 
-    @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_options, container, false);
 
         EditText pitchRollDelay = root.findViewById(R.id.pitchRollDelayEditText);
-        pitchRollDelay.setText(getPreferencesInt("pitchRollDelay", getContext()) + ""); //passing only an int causes an R.resourceNotFoundException because it tries to get the string using String.ValueOf(int)
+        pitchRollDelay.setText(getString(R.string.empty_string, getPreferencesInt("pitchRollDelay", getContext())));
         pitchRollDelay.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 try {
@@ -42,7 +40,7 @@ public class OptionsFragment extends Fragment {
         });
 
         EditText bluetoothDiscoveryCountdown = root.findViewById(R.id.bluetoothDiscoveryCountdown);
-        bluetoothDiscoveryCountdown.setText(getPreferencesInt("discoveryCountdown", getContext()) + "");
+        bluetoothDiscoveryCountdown.setText(getString(R.string.empty_string, getPreferencesInt("discoveryCountdown", getContext())));
         bluetoothDiscoveryCountdown.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 try {

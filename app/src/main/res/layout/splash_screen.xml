@@ -14,5 +14,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/makerstation_png_colored_no_background_gradient" />
+        android:src="@drawable/logo_makerstation_no_background" />
 </androidx.constraintlayout.widget.ConstraintLayout>
