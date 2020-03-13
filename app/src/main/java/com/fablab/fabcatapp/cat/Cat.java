@@ -1,22 +1,20 @@
 package com.fablab.fabcatapp.cat;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
 
 import com.fablab.fabcatapp.MainActivity;
-import com.fablab.fabcatapp.R;
-import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.motors.MotorsFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class cat {
-    private TextView pitchTextView, rollTextView;
+public class Cat {
+    public String[] pitchRoll = new String[2];
     private SparseArray<Timer> motorMovementTimer = new SparseArray<>();
     private int[][] positions = {
             {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},           // shutdown
@@ -31,24 +29,16 @@ public class cat {
         if (delay == (byte) 0) {
             delay = (byte) 1;
         }
-        BluetoothConnect.sendData(view, (byte) 222, (byte) 1, delay);
-        pitchTextView = view.findViewById(R.id.pitchTextView);
-        rollTextView = view.findViewById(R.id.rollTextView);
+        BluetoothFragment.sendData(view, (byte) 222, (byte) 1, delay);
     }
 
-    public void pitchRollChanged(String pitch, String roll, Context applicationContext) {
-        if (pitchTextView != null && rollTextView != null) {
-            pitchTextView.post(() -> {
-                pitchTextView.setText(pitch);
-                rollTextView.setText(roll);
-            });
-        } else {
-            MainActivity.createOverlayAlert("Error", "There was an error while updating the pitch & roll values, you can try restarting the app.", applicationContext);
-        }
+    public void pitchRollChanged(String pitch, String roll) {
+        pitchRoll[0] = pitch;
+        pitchRoll[1] = roll;
     }
 
     public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate) {
-        if (BluetoothConnect.checkConnection(callingView)) {
+        if (BluetoothFragment.checkConnection(callingView)) {
             TextView currentTextView = callingView.findViewById(viewToUpdate);
             TimerTask task = new TimerTask() {
                 @SuppressLint("SetTextI18n")
@@ -58,11 +48,11 @@ public class cat {
                         MainActivity.createAlert("Limit reached!", callingView, true);
                     } else if (increment) {
                         MotorsFragment.motorPositions[motorId]++;
-                        BluetoothConnect.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
+                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
                         currentTextView.post(() -> currentTextView.setText(MotorsFragment.motorPositions[motorId] + ""));
                     } else {
                         MotorsFragment.motorPositions[motorId]--;
-                        BluetoothConnect.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
+                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
                         currentTextView.post(() -> currentTextView.setText(MotorsFragment.motorPositions[motorId] + ""));
                     }
                 }
@@ -74,12 +64,12 @@ public class cat {
     }
 
     public void function(View callingView, int function) {
-        BluetoothConnect.sendData(callingView, (byte) 221, (byte) function);
+        BluetoothFragment.sendData(callingView, (byte) 221, (byte) function);
         MotorsFragment.motorPositions = positions[function];
     }
 
     public void toggleFunction(View callingView, int function) {
-        BluetoothConnect.sendData(callingView, (byte) 222, (byte) function);
+        BluetoothFragment.sendData(callingView, (byte) 222, (byte) function);
     }
 
     public void stopMovement(int motorId) {

@@ -14,8 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
-import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
 import java.util.ArrayList;
 
@@ -82,10 +83,18 @@ public class MotorsFragment extends Fragment {
             motorIncrementButtons.get(i).setOnTouchListener((v, event) -> {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        BluetoothConnect.cat.moveMotor(root, motorNumbers[j], true, views[j]);
+                        if (BluetoothFragment.cat != null) {
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j]);
+                        } else {
+                            MainActivity.createAlert("Not connected!", root, true);
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
-                        BluetoothConnect.cat.stopMovement(motorNumbers[j]);
+                        if (BluetoothFragment.cat != null) {
+                            BluetoothFragment.cat.stopMovement(motorNumbers[j]);
+                        } else {
+                            MainActivity.createAlert("Not connected!", root, true);
+                        }
                         break;
                 }
                 return true;
@@ -97,10 +106,18 @@ public class MotorsFragment extends Fragment {
             motorDecrementButtons.get(i).setOnTouchListener((v, event) -> {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        BluetoothConnect.cat.moveMotor(root, motorNumbers[j], false, views[j]);
+                        if (BluetoothFragment.cat != null) {
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j]);
+                        } else {
+                            MainActivity.createAlert("Not connected!", root, true);
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
-                        BluetoothConnect.cat.stopMovement(motorNumbers[j]);
+                        if (BluetoothFragment.cat != null) {
+                            BluetoothFragment.cat.stopMovement(motorNumbers[j]);
+                        } else {
+                            MainActivity.createAlert("Not connected!", root, true);
+                        }
                         break;
                 }
                 return true;
@@ -115,7 +132,11 @@ public class MotorsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.add("Reset all Threads").setOnMenuItemClickListener((menuItem) -> {
-            BluetoothConnect.cat.stopAllMovementThreads(getView());
+            if (BluetoothFragment.cat != null) {
+                BluetoothFragment.cat.stopAllMovementThreads(getView());
+            } else {
+                MainActivity.createAlert("Not connected!", menuItem.getActionView(), true);
+            }
 
             return false;
         });

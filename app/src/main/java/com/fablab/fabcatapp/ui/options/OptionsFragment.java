@@ -21,7 +21,7 @@ import java.util.Objects;
 
 
 public class OptionsFragment extends Fragment {
-    private static SharedPreferences preferences;
+    public static SharedPreferences preferences;
     public static int pitchRollDelay;
 
     @SuppressLint("SetTextI18n")
@@ -55,10 +55,8 @@ public class OptionsFragment extends Fragment {
         });
 
         Switch debugSwitch = root.findViewById(R.id.debugSwitch);
-        debugSwitch.setOnCheckedChangeListener((v, checked) -> {
-            debugSwitch.setChecked(checked);
-            setPreferencesBoolean("debug", checked, getContext());
-        });
+        debugSwitch.setChecked(getPreferencesBoolean("debug", getContext()));
+        debugSwitch.setOnCheckedChangeListener((v, checked) -> setPreferencesBoolean("debug", checked, getContext()));
 
         return root;
     }
@@ -105,14 +103,30 @@ public class OptionsFragment extends Fragment {
     }
 
     public static void setPreferencesBoolean(String key, boolean value, Context applicationContext) {
-        if (!preferences.edit().putBoolean(key, value).commit()) {
-            MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+        if (preferences != null) {
+            if (!preferences.edit().putBoolean(key, value).commit()) {
+                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+            }
+        } else {
+            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup", applicationContext);
         }
     }
 
+    public static boolean getPreferencesBoolean(String key, Context applicationContext) {
+        if (preferences == null) {
+            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup", applicationContext);
+            return false;
+        } else {
+            return preferences.getBoolean(key, false);
+        }
+
+    }
+
     private static void setPreferencesInt(String key, int value, Context applicationContext) {
-        if (!preferences.edit().putInt(key, value).commit()) {
-            MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+        if (preferences != null) {
+            if (!preferences.edit().putInt(key, value).commit()) {
+                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+            }
         }
     }
 

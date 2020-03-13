@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout3"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
@@ -28,7 +27,7 @@
         android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/fabcat_app"
+        android:text="@string/fab_cat_app"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -50,6 +49,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:srcCompat="@drawable/ic_makerstation" />
+        app:srcCompat="@drawable/ic_makerstation"
+        android:contentDescription="@string/logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

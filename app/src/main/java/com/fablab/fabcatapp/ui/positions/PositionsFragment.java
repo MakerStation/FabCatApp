@@ -9,8 +9,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
-import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 
 public class PositionsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -23,18 +24,26 @@ public class PositionsFragment extends Fragment {
         Button straightLegButton = root.findViewById(R.id.straightLegButton);
         Button crouchedButton = root.findViewById(R.id.crouchedButton);
 
-        shutdownButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 0)));
+        shutdownButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 0); });
 
-        startButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 1)));
+        startButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 1); });
 
-        calibrationButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 2)));
+        calibrationButton.setOnClickListener((v) ->{ if(checkCat(root)) BluetoothFragment.cat.function(root, 2); });
 
-        motor90DegreesButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 3)));
+        motor90DegreesButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 3); });
 
-        straightLegButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 4)));
+        straightLegButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 4); });
 
-        crouchedButton.setOnClickListener((v -> BluetoothConnect.cat.function(root, 5)));
+        crouchedButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 5); });
 
         return root;
+    }
+
+    private boolean checkCat(View view) {
+        if (BluetoothFragment.cat != null) return true;
+        else {
+            MainActivity.createAlert("Cat not connected", view, true);
+            return false;
+        }
     }
 }

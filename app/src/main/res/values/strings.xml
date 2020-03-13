@@ -11,9 +11,9 @@
     <string name="connectivity">Connectivity</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="home">Home</string>
-    <string name="homefragment">HomeFragment</string>
-    <string name="fabcat_app">FabCat app</string>
-    <string name="brought_to_you_by_sintuz_amp_fedeb"><![CDATA[Brought to you by sintuz & fedeb]]></string>
+    <string name="home_fragment">HomeFragment</string>
+    <string name="fab_cat_app">FabCat app</string>
+    <string name="brought_to_you_by_sintuz_amp_fedeb"><![CDATA[Brought to you by Sintuz & Fedeb]]></string>
     <string name="reset">Reset</string>
     <string name="configuration">Settings</string>
     <string name="cat">Cat</string>
@@ -37,14 +37,14 @@
     <string name="back_right_knee">Back right knee</string>
     <string name="back_right_shoulder">Back right shoulder</string>
     <string name="positions">Positions</string>
-    <string name="scansiona_dispositivi">Scan devices</string>
+    <string name="scan_devices">Scan devices</string>
     <string name="start_position">Start position</string>
     <string name="shutdown">Shutdown</string>
     <string name="calibration_position">Calibration position</string>
     <string name="all_motors_90_degrees">All motors 90 degrees</string>
     <string name="straight_leg">Straight leg</string>
     <string name="crouched_position">Crouched position</string>
-    <string name="logo_makerstation">Logo makerstation</string>
+    <string name="logo_maker_station">Logo MakerStation</string>
     <string name="OFF">OFF</string>
     <string name="cat_parameters">Cat parameters</string>
     <string name="delay_pitch_roll_ms">Delay pitch roll (ms)</string>
@@ -58,4 +58,10 @@
     <string name="cat_image">Cat image</string>
     <string name="roll">Roll</string>
     <string name="pitch">Pitch</string>
+    <string name="scan_complete">Scan complete</string>
+    <string name="countdown_one">%d second left</string>
+    <string name="countdown_other">%d seconds left</string>
+    <string name="logo">Logo</string>
+    <string name="Disconnect">Disconnect</string>
+    <string name="exception">Cause: %s \n Stack: %s</string>
 </resources>

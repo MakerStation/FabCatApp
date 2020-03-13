@@ -7,12 +7,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Bundle;
-
-import com.fablab.fabcatapp.bluetooth.BluetoothConnect;
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener((view) -> BluetoothConnect.sendCustomCommand(view, this)); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
+        fab.setOnClickListener((view) -> BluetoothFragment.sendCustomCommand(view, this)); //is equal to (view) -> BluetoothConnect.sendCustomCommand(view);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -197,13 +197,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
-//        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(1);
-//                }
-//        ).show();
-//    }
+    public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
+        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                    System.exit(1);
+                }
+        ).show();
+    }
+
+    public static void createPreferencesErrorAlert(String title, String message, Context applicationContext) {
+        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Attempt automatic fix", (dialog, which) -> {
+                    OptionsFragment.preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+                    if (OptionsFragment.preferences != null) {
+                        createOverlayAlert("Success", "The automatic fix worked! :D", applicationContext);
+                    }
+                }
+        ).setNegativeButton("Restart the app", (dialog, which) -> {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }).setNeutralButton("Ignore", null).show();
+    }
 
     public static void hideKeyboardFrom(Context context, View view, Context applicationContext) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
