@@ -12,8 +12,8 @@
         android:id="@+id/imageView"
         android:layout_width="55dp"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -46,10 +46,10 @@
         android:layout_height="47dp"
         android:layout_marginStart="90dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/logo"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:srcCompat="@drawable/ic_makerstation"
-        android:contentDescription="@string/logo" />
+        app:srcCompat="@drawable/ic_makerstation_logo_no_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

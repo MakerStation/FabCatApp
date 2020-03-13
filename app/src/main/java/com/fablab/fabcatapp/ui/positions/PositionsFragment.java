@@ -27,6 +27,10 @@ public class PositionsFragment extends Fragment {
         Button motor90DegreesButton = root.findViewById(R.id.motor90DegreesButton);
         Button straightLegButton = root.findViewById(R.id.straightLegButton);
         Button crouchedButton = root.findViewById(R.id.crouchedButton);
+        Button waveButton = root.findViewById(R.id.waveButton);
+        Button walkButton = root.findViewById(R.id.walkButton);
+        Button tailSitButton = root.findViewById(R.id.tailSitButton);
+        Button sitButton = root.findViewById(R.id.sitButton);
 
         shutdownButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 0); });
 
@@ -39,6 +43,15 @@ public class PositionsFragment extends Fragment {
         straightLegButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 4); });
 
         crouchedButton.setOnClickListener((v) -> { if(checkCat(root)) BluetoothFragment.cat.function(root, 5); });
+
+        waveButton.setOnClickListener((v) -> { if (checkCat(root)) BluetoothFragment.cat.function(root, 10);});
+
+        walkButton.setOnClickListener((v) -> { if (checkCat(root)) BluetoothFragment.cat.function(root, 9);});
+
+        tailSitButton.setOnClickListener((v) -> { if (checkCat(root)) BluetoothFragment.cat.function(root, 11);});
+
+        sitButton.setOnClickListener((v) -> { if (checkCat(root)) BluetoothFragment.cat.function(root, 12);});
+
 
         return root;
     }

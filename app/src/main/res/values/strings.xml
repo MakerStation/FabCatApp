@@ -90,4 +90,9 @@
     <string name="back_right_shoulder_motor_off">Back right shoulder OFF</string>
     <string name="back_left_knee_motor_off">Back left knee OFF</string>
     <string name="back_right_knee_motor_off">Back right knee OFF</string>
+    <string name="walk">Walk</string>
+    <string name="wave">Wave</string>
+    <string name="sit">Sit</string>
+    <string name="tail_sit">Tail sit</string>
+    <string name="connections">Connections</string>
 </resources>

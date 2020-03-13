@@ -22,7 +22,14 @@ public class Cat {
             {90, 90, 90, 80, 80, 80, 80, 112, 112, 112, 112},       // calibration position
             {90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90},           // all motors 90 degrees
             {90, 90, 90, 80, 80, 80, 80, 40, 40, 40, 40},           // straight legs
-            {90, 150, 120, 20, 18, 20, 20, 168, 170, 168, 168}};    // crouched position
+            {90, 150, 120, 20, 18, 20, 20, 168, 170, 168, 168},     // crouched position
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+            {90, 90, 90, 20, 65, 65, 20, 100, 135, 135, 105},       // walk
+            {65, 90, 30, 70, 144, 0, 0, 65, 45, 150, 175},          // wave
+            {90, 130, 0, 30, 30, 30, 30, 30, 30, 120, 120},         // tail sit
+            {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120}};      // sit
 
     public void activatePitchRoll(View view) {
         byte delay = (byte) Math.round(OptionsFragment.pitchRollDelay /25.0); //25 throws a floating point with int division
