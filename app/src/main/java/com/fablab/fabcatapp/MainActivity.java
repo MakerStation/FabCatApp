@@ -77,18 +77,20 @@ public class MainActivity extends AppCompatActivity {
         if (OptionsFragment.isAppFirstRun(this)) {
             OptionsFragment.setPreferencesBoolean("isAppFirstRun", false, this);
         }
+
+        Context context = this;
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 if (BluetoothFragment.connectionUnexpectedlyClosed) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", getApplicationContext()) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", getApplicationContext()));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", context));
                     BluetoothFragment.connectionUnexpectedlyClosed = false;
                     BluetoothFragment.latestException = null;
                 }
             }
         };
         Timer timer = new Timer();
-        timer.schedule(timerTask, 0, 5);
+        timer.schedule(timerTask, 0, 5000);
     }
 
     @Override

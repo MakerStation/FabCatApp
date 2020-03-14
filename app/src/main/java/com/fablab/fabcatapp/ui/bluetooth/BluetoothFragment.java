@@ -63,6 +63,8 @@ public class BluetoothFragment extends Fragment {
     public static boolean connectionUnexpectedlyClosed = false;
     public static Exception latestException;
 
+    private ArrayList<Button> connectButtons = new ArrayList<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
 
@@ -296,7 +298,12 @@ public class BluetoothFragment extends Fragment {
             ));
 
             currentButton.setText(device.getName());
-            currentButton.setOnClickListener((v) -> connect(device));
+            currentButton.setOnClickListener((v) -> {
+                for (int i = 0; i < connectButtons.size(); i++) {
+                    connectButtons.get(i).setOnClickListener((v2) -> MainActivity.createAlert("Already connecting!", root, true));
+                }
+                connect(device);
+            });
             try {
                 currentButton.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.device_button));
             } catch (Exception e)  {
@@ -309,6 +316,7 @@ public class BluetoothFragment extends Fragment {
             ll.topMargin = 5;
             currentButton.setLayoutParams(ll);
             bluetoothScrollViewLayout.addView(currentButton);
+            connectButtons.add(currentButton);
         }
     }
 
@@ -384,6 +392,9 @@ public class BluetoothFragment extends Fragment {
             } finally {
                 connected = false;
                 setDiscoveryOrDisconnectButtonState(true);
+                for (int i = 0; i < connectButtons.size(); i++) {
+                    connectButtons.get(i).setClickable(true);
+                }
             }
             new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage(), getContext()));
         }
