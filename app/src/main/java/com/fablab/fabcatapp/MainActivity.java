@@ -41,10 +41,7 @@ import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -240,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     @Override //when you click out of an EditText, it loses focus and it calls the event listener
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (BluetoothFragment.connectionUnexpectedlyClosed) {
-            createOverlayAlert("Error", OptionsFragment.getPreferencesBoolean("debug", this) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", this);
+            createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", this) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", this);
             BluetoothFragment.connectionUnexpectedlyClosed = false;
             BluetoothFragment.latestException = null;
         }
