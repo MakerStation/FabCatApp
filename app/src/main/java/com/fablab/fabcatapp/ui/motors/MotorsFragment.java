@@ -21,6 +21,7 @@ import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import java.util.ArrayList;
 
 public class MotorsFragment extends Fragment {
+    private View root;
     public static int[] motorPositions = {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120};
     private int[] motorNumbers = {1, 0, 2, 3, 4, 7, 8, 6, 5, 10, 9};
     private ArrayList<Button> motorIncrementButtons = new ArrayList<>();
@@ -128,6 +129,7 @@ public class MotorsFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        this.root = root;
         return root;
     }
 
@@ -137,7 +139,7 @@ public class MotorsFragment extends Fragment {
             if (BluetoothFragment.cat != null) {
                 BluetoothFragment.cat.stopAllMovementThreads(getView());
             } else {
-                MainActivity.createAlert("Not connected!", menuItem.getActionView(), true);
+                MainActivity.createAlert("Not connected!", root, true);
             }
 
             return false;
