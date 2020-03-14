@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:textColor">@color/textColorPrimary</item>
-        <item name="android:itemBackground">@color/menuBackGround</item>
+        <item name="android:itemBackground">@color/windowBackground</item>
         <item name="android:actionBarStyle">@style/CustomActionBar</item>
         <item name="windowActionBar">false</item> <!-- this line and the one below are necessary to make the splash screen work -->
         <item name="windowNoTitle">true</item>

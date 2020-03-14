@@ -3,10 +3,18 @@ package com.fablab.fabcatapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
+
+import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -16,6 +24,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -32,6 +41,10 @@ import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -226,6 +239,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override //when you click out of an EditText, it loses focus and it calls the event listener
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if (BluetoothFragment.connectionUnexpectedlyClosed) {
+            createOverlayAlert("Error", OptionsFragment.getPreferencesBoolean("debug", this) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", this);
+            BluetoothFragment.connectionUnexpectedlyClosed = false;
+            BluetoothFragment.latestException = null;
+        }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
@@ -238,5 +256,39 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    public static void createNotification(String notificationTitle, String notificationText, String notificationTitleDetailMode, String notificationsTextDetailMode, Context context) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context.getApplicationContext(), "notify_001");
+        Intent ii = new Intent(context.getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, ii, 0);
+
+        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+        bigText.bigText(notificationsTextDetailMode); //detail mode is the "expanded" notification
+        bigText.setBigContentTitle(notificationTitleDetailMode);
+        bigText.setSummaryText(SplashScreen.compactAppVersion);
+
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        mBuilder.setContentTitle(notificationTitle);
+        mBuilder.setContentText(notificationText);
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setStyle(bigText);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("notify_001",
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            if (mNotificationManager != null) {
+                mNotificationManager.createNotificationChannel(channel);
+            }
+        }
+
+        if (mNotificationManager != null) {
+            mNotificationManager.notify(0, mBuilder.build());
+        }
     }
 }

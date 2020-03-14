@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreen extends AppCompatActivity {
+    public static String compactAppVersion;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +19,7 @@ public class SplashScreen extends AppCompatActivity {
         TextView versionTextView = findViewById(R.id.versionTextView);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            compactAppVersion = "v"+pInfo.versionName+" beta";
             versionTextView.setText(getString(R.string.version_string, pInfo.versionName));
         } catch (PackageManager.NameNotFoundException e) {
             MainActivity.createOverlayAlert("Error", "Couldn't get the app version. It is recommended to reinstall the app.", getApplicationContext());

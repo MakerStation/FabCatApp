@@ -34,6 +34,7 @@ import com.fablab.fabcatapp.cat.Cat;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +59,9 @@ public class BluetoothFragment extends Fragment {
 
     private View root;
     private CountDownTimer countDownTimer;
+
+    public static boolean connectionUnexpectedlyClosed = false;
+    public static Exception latestException;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
@@ -97,6 +101,7 @@ public class BluetoothFragment extends Fragment {
         }
 
         this.root = root;
+
         return root;
     }
 
@@ -318,7 +323,7 @@ public class BluetoothFragment extends Fragment {
         try {
             bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
         } catch (IOException e) {
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Socket creation failed ):", root, false));
+            MainActivity.createAlert("Socket creation failed ):", root, false);
         }
 
         try {
@@ -359,7 +364,11 @@ public class BluetoothFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         if (!ignoreInStreamInterruption) {
-                            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", getContext()) ? "InStream interrupted Cause: " + e.getMessage() + "\nStack: " + Arrays.toString(e.getStackTrace()) : "Connection closed by the remote host.", getContext()));
+                            //we need to create a notification because it isn't possible to create an alert dialog from a not visible fragment
+                            //new Handler(Looper.getMainLooper()).post(() -> MainActivity.createNotification("Disconnected", "The device has been disconnected.", "Disconnected", OptionsFragment.getPreferencesBoolean("debug", getContext()) ? "InStream interrupted Cause: " + e.getMessage() + "\nStack: " + Arrays.toString(e.getStackTrace()) : "Connection closed by the remote host.", application));
+                            //see MainActivity dispatch touch event, we're using the first touch input after disconnection to create the alert.
+                            latestException = e;
+                            connectionUnexpectedlyClosed = true;
                             setDiscoveryOrDisconnectButtonState(true);
                         }
                         outStream = null;
