@@ -10,8 +10,9 @@
         <item name="android:textColor">@color/textColorPrimary</item>
         <item name="android:itemBackground">@color/menuBackGround</item>
         <item name="android:actionBarStyle">@style/CustomActionBar</item>
-        <item name="windowActionBar">false</item> <!-- senza questa linea e quella sotto non possiamo fare la splashscreen -->
+        <item name="windowActionBar">false</item> <!-- this line and the one below are necessary to make the splash screen work -->
         <item name="windowNoTitle">true</item>
+        <item name="android:textColorSecondary">@color/textColorPrimary</item> <!-- to change the menu items text color such as home and connectivity etc... -->
     </style>
 
     <style name="AppTheme.NoActionBar">
