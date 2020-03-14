@@ -18,6 +18,8 @@ import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
@@ -75,6 +77,18 @@ public class MainActivity extends AppCompatActivity {
         if (OptionsFragment.isAppFirstRun(this)) {
             OptionsFragment.setPreferencesBoolean("isAppFirstRun", false, this);
         }
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (BluetoothFragment.connectionUnexpectedlyClosed) {
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", getApplicationContext()) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", getApplicationContext()));
+                    BluetoothFragment.connectionUnexpectedlyClosed = false;
+                    BluetoothFragment.latestException = null;
+                }
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(timerTask, 0, 5);
     }
 
     @Override
