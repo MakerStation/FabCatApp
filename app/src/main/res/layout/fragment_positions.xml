@@ -6,143 +6,160 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_start"
-        android:text="@string/start_position"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shutdownButton" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/shutdownButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableStart="@drawable/ic_shutdown"
-        android:drawableTint="?android:textColorPrimary"
-        android:text="@string/shutdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scrollView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/calibrationButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_calibration"
-        android:text="@string/calibration_position"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startButton" />
+            <Button
+                android:id="@+id/startButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_start"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/start_position"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shutdownButton" />
 
-    <Button
-        android:id="@+id/motor90DegreesButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_90_degrees"
-        android:text="@string/all_motors_90_degrees"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calibrationButton" />
+            <Button
+                android:id="@+id/shutdownButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_shutdown"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/shutdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/straightLegButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_straight_leg"
-        android:text="@string/straight_leg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/motor90DegreesButton" />
+            <Button
+                android:id="@+id/calibrationButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_calibration"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/calibration_position"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startButton" />
 
-    <Button
-    android:id="@+id/crouchedButton"
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:backgroundTint="?colorButtonNormal"
-    android:drawableTint="?android:textColorPrimary"
-    android:drawableStart="@drawable/ic_crouch"
-    android:text="@string/crouched_position"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.495"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/straightLegButton" />
+            <Button
+                android:id="@+id/motor90DegreesButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_90_degrees"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/all_motors_90_degrees"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/calibrationButton" />
 
-    <Button
-        android:id="@+id/walkButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_move"
-        android:text="@string/walk"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/straightLegButton" />
+            <Button
+                android:id="@+id/straightLegButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_straight_leg"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/straight_leg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/motor90DegreesButton" />
 
-    <Button
-        android:id="@+id/waveButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_wave"
-        android:text="@string/wave"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/walkButton" />
+            <Button
+                android:id="@+id/crouchedButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_crouch"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/crouched_position"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/straightLegButton" />
 
-    <Button
-        android:id="@+id/tailSitButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_sit"
-        android:text="@string/tail_sit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/waveButton" />
+            <Button
+                android:id="@+id/walkButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_move"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/walk"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/straightLegButton" />
 
-    <Button
-        android:id="@+id/sitButton"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:drawableStart="@drawable/ic_sit"
-        android:text="@string/sit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tailSitButton" />
+            <Button
+                android:id="@+id/waveButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_wave"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/wave"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/walkButton" />
+
+            <Button
+                android:id="@+id/tailSitButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_sit"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/tail_sit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/waveButton" />
+
+            <Button
+                android:id="@+id/sitButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:drawableStart="@drawable/ic_sit"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/sit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.51"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tailSitButton" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
