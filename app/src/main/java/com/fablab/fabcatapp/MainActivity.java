@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("DarkTheme", false)) {
+            setTheme(R.style.DarkTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -216,12 +219,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static void createOverlayAlert(String title, String message, Context applicationContext) {
         if (applicationContext != null) {
-            new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
+            new AlertDialog.Builder(applicationContext, OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext) ? R.style.Theme_AppCompat_Light_Dialog : R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
         }
     }
 
     public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
-        new AlertDialog.Builder(applicationContext, R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
+        new AlertDialog.Builder(applicationContext, OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext) ?  R.style.Theme_AppCompat_Light_Dialog : R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
                     android.os.Process.killProcess(android.os.Process.myPid());
                     System.exit(1);
                 }

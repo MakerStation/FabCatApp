@@ -61,6 +61,13 @@ public class OptionsFragment extends Fragment {
         debugSwitch.setChecked(getPreferencesBoolean("debug", getContext()));
         debugSwitch.setOnCheckedChangeListener((v, checked) -> setPreferencesBoolean("debug", checked, getContext()));
 
+        Switch darkThemeSwitch = root.findViewById(R.id.darkThemeSwitch);
+        darkThemeSwitch.setChecked(getPreferencesBoolean("DarkTheme", getContext()));
+        darkThemeSwitch.setOnCheckedChangeListener((v, checked) -> {
+            setPreferencesBoolean("DarkTheme", checked, getContext());
+            MainActivity.createCriticalErrorAlert("Warning", "You need to restart the app to apply any theme change.", getContext());
+        });
+
         return root;
     }
 

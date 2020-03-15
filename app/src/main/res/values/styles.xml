@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -13,16 +13,41 @@
         <item name="windowActionBar">false</item> <!-- this line and the one below are necessary to make the splash screen work -->
         <item name="windowNoTitle">true</item>
         <item name="android:textColorSecondary">@color/textColorPrimary</item> <!-- to change the menu items text color such as home and connectivity etc... -->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="colorButtonNormal">@color/positionsAndFunctionsButtonsBackground</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="DarkTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="LightTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item> <!-- this line and the one below are necessary to make the splash screen work -->
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorPrimary">@color/menuBackGround</item>
+        <item name="colorButtonNormal">@color/positionsAndFunctionsButtonsBackgroundLight</item>
+    </style>
+
+    <style name="LightTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
+
+    <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
 
     <style name="DialogTheme" parent="ThemeOverlay.MaterialComponents.Dark">
         <item name="android:layout_width">wrap_content</item>
