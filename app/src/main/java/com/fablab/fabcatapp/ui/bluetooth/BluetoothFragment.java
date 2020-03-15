@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -437,7 +438,8 @@ public class BluetoothFragment extends Fragment {
     }
 
     public static void sendCustomCommand(View view, Context applicationContext) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(applicationContext, R.style.DialogTheme);
+        boolean DarkTheme = OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(applicationContext, DarkTheme ? R.style.DialogTheme : R.style.Theme_AppCompat_Light_Dialog);
         dialog.setTitle("Command parameters");
         dialog.setMessage("Type in the prefix then the command e.g. (221, 1)");
 
@@ -445,7 +447,7 @@ public class BluetoothFragment extends Fragment {
         layout.setOrientation(LinearLayout.VERTICAL); //without this you can only put one view at once
 
         EditText prefixInput = new EditText(applicationContext);
-        prefixInput.setTextColor(Color.WHITE);
+        if (DarkTheme) prefixInput.setTextColor(Color.WHITE);
         prefixInput.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -454,7 +456,7 @@ public class BluetoothFragment extends Fragment {
 
         layout.addView(prefixInput);
         EditText cmdInput = new EditText(applicationContext);
-        cmdInput.setTextColor(Color.WHITE);
+        if (DarkTheme) cmdInput.setTextColor(Color.WHITE);
         cmdInput.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -469,7 +471,8 @@ public class BluetoothFragment extends Fragment {
                 MainActivity.createAlert("Please insert a valid number", view, false);
             }
         });
-        dialog.show();
+        AlertDialog alertDialog = dialog.create();
+        alertDialog.show();
     }
 
     private void setDiscoveryOrDisconnectButtonState(boolean discoveryOrDisconnect) {
