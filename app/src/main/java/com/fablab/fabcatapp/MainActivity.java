@@ -2,6 +2,7 @@ package com.fablab.fabcatapp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -226,6 +227,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static void createCriticalErrorAlert(String title, String message, Context applicationContext) {
         AlertDialog.Builder builder = new AlertDialog.Builder(applicationContext, OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext) ?  R.style.Theme_AppCompat_Light_Dialog : R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton("Restart", (dialog, which) -> {
+                    Intent splashScreenActivity = new Intent(applicationContext, SplashScreen.class);
+                    int intentId = 111111; //random number
+                    PendingIntent appRestartIntent = PendingIntent.getActivity(applicationContext, intentId,    splashScreenActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                    AlarmManager alarmManager = (AlarmManager)applicationContext.getSystemService(Context.ALARM_SERVICE);
+                    if (alarmManager != null) {
+                        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 100, appRestartIntent);
+                    }
                     android.os.Process.killProcess(android.os.Process.myPid());
                     System.exit(1);
                 }
