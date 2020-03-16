@@ -182,15 +182,15 @@ public class MainActivity extends AppCompatActivity {
     public void exitDueTo(@NonNull String cause) {
         switch (cause) {
             case "GPS_PERMISSION": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Start failure").setMessage("The app requires the GPS to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the GPS to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
             break;
             case "BLUETOOTH_PERMISSION": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Start failure").setMessage("The app requires the Bluetooth to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the Bluetooth to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
             break;
             case "UNKNOWN_PERMISSION_ERROR": {
-                new AlertDialog.Builder(getApplicationContext()).setTitle("Critical error").setMessage("Due to an unknown error in the permission request the app can't work. A restart is necessary.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).show();
+                new AlertDialog.Builder(this).setTitle("Critical error").setMessage("Due to an unknown error in the permission request the app can't work. A restart is necessary.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
 
             break;
