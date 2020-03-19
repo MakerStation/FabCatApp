@@ -64,6 +64,8 @@ public class BluetoothFragment extends Fragment {
     public static Exception latestException;
 
     private ArrayList<Button> connectButtons = new ArrayList<>();
+    private ArrayList<BluetoothDevice> pairedAndAvailableDevices = new ArrayList<>();
+
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
@@ -144,8 +146,6 @@ public class BluetoothFragment extends Fragment {
 
     private void startDiscovery(BluetoothAdapter adapter, BroadcastReceiver broadcastReceiver) {
         TextView discoveryCountdownTextView = root.findViewById(R.id.discoveryCountdown);
-        if (getContext() != null) discoveryCountdownTextView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.textColorPrimary));
-        else contextNotFound();
 
         if (adapter.isDiscovering()) {
             //restart discovery if it's already running
@@ -229,7 +229,6 @@ public class BluetoothFragment extends Fragment {
         StringBuilder textToDisplay = new StringBuilder();
         StringBuilder bluetoothNotices = new StringBuilder();
         ArrayList<String> macList = new ArrayList<>();
-        ArrayList<BluetoothDevice> pairedAndAvailableDevices = new ArrayList<>();
 
         if(availableDevices.size() == 0) {
             textToDisplay.append("No devices available, make sure the device is visible.\n");
@@ -381,6 +380,7 @@ public class BluetoothFragment extends Fragment {
                         }
                         outStream = null;
                         connected = false;
+                        enableConnectButtons();
                     }
                 }
             }.start();
@@ -388,7 +388,7 @@ public class BluetoothFragment extends Fragment {
             try {
                 bluetoothSocket.close();
             } catch (IOException closeException) {
-                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket", root, false));
+                MainActivity.createAlert("Could not close the client socket", root, false);
             } finally {
                 connected = false;
                 setDiscoveryOrDisconnectButtonState(true);
@@ -396,7 +396,22 @@ public class BluetoothFragment extends Fragment {
                     connectButtons.get(i).setClickable(true);
                 }
             }
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage(), getContext()));
+            MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage(), getContext());
+            outStream = null;
+            connected = false;
+            enableConnectButtons();
+        }
+    }
+
+    private void enableConnectButtons() {
+        for (int i = 0; i < connectButtons.size(); i++) {
+            int j = i;
+            connectButtons.get(i).setOnClickListener((v) -> {
+                for (int k = 0; k < connectButtons.size(); k++) {
+                    connectButtons.get(k).setOnClickListener((v2) -> MainActivity.createAlert("Already connecting!", root, true));
+                }
+                connect(pairedAndAvailableDevices.get(j));
+            });
         }
     }
 

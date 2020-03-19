@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void createOverlayAlert(String title, String message, Context applicationContext) {
         if (applicationContext != null) {
-            new AlertDialog.Builder(applicationContext, OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext) ? R.style.Theme_AppCompat_Light_Dialog : R.style.DialogTheme).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
+            new AlertDialog.Builder(applicationContext, OptionsFragment.getPreferencesBoolean("DarkTheme", applicationContext) ?  R.style.DialogTheme : R.style.Theme_AppCompat_Light_Dialog).setTitle(title).setMessage(message).setPositiveButton(android.R.string.yes, null).show();
 
         }
     }
