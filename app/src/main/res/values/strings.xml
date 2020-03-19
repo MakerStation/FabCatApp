@@ -96,4 +96,8 @@
     <string name="tail_sit">Tail sit</string>
     <string name="connections">Connections</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="check_the_app_s_repository_on_github">Check the app\'s repository on GitHub</string>
+    <string name="info">Info</string>
+    <string name="visit_our_website">Visit our website</string>
+    <string name="about_us">About us</string>
 </resources>
