@@ -2,136 +2,155 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/rollTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/OFF"
-        app:layout_constraintStart_toEndOf="@+id/textView13"
-        app:layout_constraintTop_toBottomOf="@+id/pitchRollToggleButton" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/roll"
-        app:layout_constraintStart_toStartOf="@+id/pitchRollToggleButton"
-        app:layout_constraintTop_toBottomOf="@+id/pitchRollToggleButton" />
-
-    <ToggleButton
-        android:id="@+id/pitchRollToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="248dp"
-        android:layout_marginTop="40dp"
-        android:buttonTint="?colorButtonNormal"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:text="@string/pitch_roll"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ToggleButton
-        android:id="@+id/autoBalanceToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:buttonTint="?colorButtonNormal"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:text="@string/auto_balance"
-        app:layout_constraintStart_toStartOf="@+id/pitchRollToggleButton"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <ToggleButton
-        android:id="@+id/fallRecoveryToggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:buttonTint="?colorButtonNormal"
-        android:backgroundTint="?colorButtonNormal"
-        android:drawableTint="?android:textColorPrimary"
-        android:text="@string/fall_recovery"
-        app:layout_constraintStart_toStartOf="@+id/autoBalanceToggleButton"
-        app:layout_constraintTop_toBottomOf="@+id/autoBalanceToggleButton" />
+            <TextView
+                android:id="@+id/rollTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/OFF"
+                app:layout_constraintStart_toEndOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/pitchRollToggleButton" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="51dp"
-        android:layout_marginTop="54dp"
-        android:text="@string/pitch_roll"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/roll"
+                app:layout_constraintEnd_toStartOf="@+id/rollTextView"
+                app:layout_constraintStart_toStartOf="@+id/pitchRollToggleButton"
+                app:layout_constraintTop_toBottomOf="@+id/pitchRollToggleButton" />
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/auto_balance"
-        app:layout_constraintStart_toStartOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            <ToggleButton
+                android:id="@+id/pitchRollToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:buttonTint="?colorButtonNormal"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/pitch_roll"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView8"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/fall_recovery"
-        app:layout_constraintStart_toStartOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            <ToggleButton
+                android:id="@+id/autoBalanceToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:buttonTint="?colorButtonNormal"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/auto_balance"
+                app:layout_constraintEnd_toEndOf="@+id/pitchRollToggleButton"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="@string/meow"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            <ToggleButton
+                android:id="@+id/fallRecoveryToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:buttonTint="?colorButtonNormal"
+                android:drawableTint="?android:textColorPrimary"
+                android:text="@string/fall_recovery"
+                app:layout_constraintEnd_toEndOf="@+id/autoBalanceToggleButton"
+                app:layout_constraintTop_toBottomOf="@+id/autoBalanceToggleButton" />
 
-    <ImageButton
-        android:id="@+id/meowButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="?colorButtonNormal"
-        android:buttonTint="?colorButtonNormal"
-        android:contentDescription="@string/cat_image"
-        android:drawableTint="?android:textColorPrimary"
-        android:tint="?android:textColorPrimary"
-        app:layout_constraintEnd_toEndOf="@+id/fallRecoveryToggleButton"
-        app:layout_constraintTop_toBottomOf="@+id/fallRecoveryToggleButton"
-        app:srcCompat="@drawable/ic_cat" />
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="54dp"
+                android:layout_marginEnd="50dp"
+                android:text="@string/pitch_roll"
+                app:layout_constraintEnd_toStartOf="@+id/pitchRollToggleButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/pitchTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="31dp"
-        android:text="@string/OFF"
-        app:layout_constraintStart_toEndOf="@+id/textView14"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/auto_balance"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
+                app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
-        android:text="@string/pitch"
-        app:layout_constraintEnd_toStartOf="@+id/pitchTextView"
-        app:layout_constraintStart_toStartOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/fall_recovery"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
+                app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
+                android:text="@string/meow"
+                app:layout_constraintStart_toStartOf="@+id/textView10"
+                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+            <ImageButton
+                android:id="@+id/meowButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="?colorButtonNormal"
+                android:buttonTint="?colorButtonNormal"
+                android:contentDescription="@string/cat_image"
+                android:drawableTint="?android:textColorPrimary"
+                android:tint="?android:textColorPrimary"
+                app:layout_constraintEnd_toEndOf="@+id/fallRecoveryToggleButton"
+                app:layout_constraintTop_toBottomOf="@+id/fallRecoveryToggleButton"
+                app:srcCompat="@drawable/ic_cat" />
+
+            <TextView
+                android:id="@+id/pitchTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="31dp"
+                android:text="@string/OFF"
+                app:layout_constraintStart_toEndOf="@+id/textView14"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="31dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/pitch"
+                app:layout_constraintEnd_toStartOf="@+id/pitchTextView"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -141,5 +160,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_dialog_email" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
