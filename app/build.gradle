@@ -3,18 +3,40 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
+    def build_version_file = file('build_version.properties')
+    Properties build_properties = new Properties()
+    if (build_version_file.canRead()) {
+        build_properties.load(new FileInputStream(build_version_file))
+    } else {
+        build_properties['version'] = '-1'
+        build_properties['build'] = '-1'
+    }
+
+    def version_code = build_properties['version']
+    def build_code = Integer.parseInt(build_properties['build']) + 1
+    build_properties['build'] = build_code.toString()
+
+    build_properties.store(build_version_file.newWriter(), null)
+
+
     defaultConfig {
         applicationId "com.fablab.fabcatapp"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 2
-        versionName "3.5"
+        versionName version_code
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "build_version", build_code.toString()
+
+        }
+        debug {
+            resValue "string", "build_version", build_code.toString()
         }
     }
     compileOptions {

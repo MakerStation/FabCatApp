@@ -104,4 +104,5 @@
     <string name="_2x">2x</string>
     <string name="_4x">4x</string>
     <string name="multiplier">Multiplier</string>
+    <string name="build">Build</string>
 </resources>

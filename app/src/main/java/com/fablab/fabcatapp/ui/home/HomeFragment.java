@@ -27,7 +27,7 @@ public class HomeFragment extends Fragment {
         visitWebsiteButton.setOnClickListener((v) -> goToUrl("http://makerstation.it"));
 
         Button visitGithubRepositoryButton = root.findViewById(R.id.visitGithubRepositoryButton);
-        visitGithubRepositoryButton.setOnClickListener((v) -> goToUrl("https://github.com/Fedefreez/FabCatApp.git"));
+        visitGithubRepositoryButton.setOnClickListener((v) -> goToUrl("https://github.com/MakerStation/FabCatApp.git"));
 
         return root;
     }

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreen extends AppCompatActivity {
     public static String compactAppVersion;
+    public static String compactAppBuild;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,10 +22,14 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
 
         TextView versionTextView = findViewById(R.id.versionTextView);
+        TextView buildTextView = findViewById(R.id.buildTextView);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             compactAppVersion = "v"+pInfo.versionName+" beta";
+            compactAppBuild = "Build: " + getResources().getString(R.string.build_version);
+
             versionTextView.setText(getString(R.string.version_string, pInfo.versionName));
+            buildTextView.setText(compactAppBuild);
         } catch (PackageManager.NameNotFoundException e) {
             MainActivity.createOverlayAlert("Error", "Couldn't get the app version. It is recommended to reinstall the app.", getApplicationContext());
         }
