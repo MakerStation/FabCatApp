@@ -18,9 +18,6 @@ import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.Objects;
-
-
 public class OptionsFragment extends Fragment {
     public static SharedPreferences preferences;
     public static int pitchRollDelay;
@@ -71,15 +68,6 @@ public class OptionsFragment extends Fragment {
         return root;
     }
 
-    private void hideOptionsFragmentKeyboard(View root) {
-        Context context = getContext();
-        if (context != null) {
-            MainActivity.hideKeyboardFrom(context, root, context);
-        } else {
-            MainActivity.createOverlayAlert("Error", "Couldn't get the context of this view. It is recommended to restart the app.", Objects.requireNonNull(getActivity()).getApplicationContext());
-        }
-    }
-
     public static void fetchSettings(Context applicationContext) {
         preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
@@ -87,10 +75,11 @@ public class OptionsFragment extends Fragment {
             setPreferencesInt("pitchRollDelay", 1000, applicationContext);
             setPreferencesInt("discoveryCountdown", 5, applicationContext);
             setPreferencesBoolean("debug", false, applicationContext);
+            setPreferencesInt("motorIncrementMultiplier", 1, applicationContext);
         }
     }
 
-    private static int getPreferencesInt(String key, Context applicationContext) {
+    public static int getPreferencesInt(String key, Context applicationContext) {
         int obtainedValue;
         if (!preferences.contains(key)) {
             MainActivity.createOverlayAlert("Error", "Error while reading: " + key + ". It is recommended to restart the app.", applicationContext);
@@ -101,12 +90,18 @@ public class OptionsFragment extends Fragment {
         return obtainedValue;
     }
 
+    public static void setPreferencesInt(String key, int value, Context applicationContext) {
+        if (preferences != null) {
+            if (!preferences.edit().putInt(key, value).commit()) {
+                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+            }
+        }
+    }
+
     public static boolean isAppFirstRun(Context applicationContext) {
         if (preferences != null) {
-            System.out.println("******AFR: R1: " + preferences.getBoolean("isAppFirstRun", true));
             return preferences.getBoolean("isAppFirstRun", true);
         } else {
-            System.out.println("******AFR: R2");
             MainActivity.createOverlayAlert("Error", "Error while fetching preferences. It is recommended to restart the app.", applicationContext);
             return false;
         }
@@ -132,11 +127,12 @@ public class OptionsFragment extends Fragment {
 
     }
 
-    private static void setPreferencesInt(String key, int value, Context applicationContext) {
-        if (preferences != null) {
-            if (!preferences.edit().putInt(key, value).commit()) {
-                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
-            }
+    private void hideOptionsFragmentKeyboard(View root) {
+        Context context = getContext();
+        if (context != null) {
+            MainActivity.hideKeyboardFrom(context, root, context);
+        } else {
+            MainActivity.createOverlayAlert("Error", "Couldn't get the context of this view. It is recommended to restart the app.", requireActivity().getApplicationContext());
         }
     }
 

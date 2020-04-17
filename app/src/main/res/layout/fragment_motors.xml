@@ -32,91 +32,90 @@
                 android:id="@+id/head"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="@string/head"
                 app:layout_constraintEnd_toStartOf="@+id/neck"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toTopOf="@+id/neck" />
 
             <TextView
                 android:id="@+id/frontLeftShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/front_left_shoulder"
                 app:layout_constraintEnd_toStartOf="@+id/frontRightShoulder"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/head" />
 
             <TextView
                 android:id="@+id/backLeftShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="328dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/back_left_shoulder"
                 app:layout_constraintEnd_toStartOf="@+id/backRightShoulder"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/frontLeftKnee" />
 
             <TextView
                 android:id="@+id/backRightShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="328dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/back_right_shoulder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/backLeftShoulder"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/frontRightKnee" />
 
             <TextView
                 android:id="@+id/frontLeftKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="224dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/front_left_knee"
                 app:layout_constraintEnd_toStartOf="@+id/frontRightKnee"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/frontLeftShoulder" />
 
             <TextView
                 android:id="@+id/backLeftKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="428dp"
+                android:layout_marginTop="81dp"
                 android:text="@string/back_left_knee"
                 app:layout_constraintEnd_toStartOf="@+id/backRightKnee"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/backLeftShoulder" />
 
             <TextView
                 android:id="@+id/frontRightKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="224dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/front_right_knee"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/frontLeftKnee"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/frontRightShoulder" />
 
             <TextView
                 android:id="@+id/backRightKnee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="428dp"
+                android:layout_marginTop="81dp"
                 android:text="@string/back_right_knee"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/backLeftKnee"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/backRightShoulder" />
 
             <TextView
                 android:id="@+id/frontRightShoulder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
+                android:layout_marginTop="85dp"
                 android:text="@string/front_right_shoulder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/frontLeftShoulder"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/tail" />
 
             <Button
                 android:id="@+id/headDecrementButton"
@@ -453,21 +452,65 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/neck"
                 app:layout_constraintEnd_toStartOf="@+id/tail"
                 app:layout_constraintStart_toEndOf="@+id/head"
-                app:layout_constraintTop_toBottomOf="@+id/motors" />
+                app:layout_constraintTop_toBottomOf="@+id/motorIncrementMultiplierRadioGroup" />
 
             <TextView
                 android:id="@+id/tail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="@string/tail"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/neck"
+                app:layout_constraintTop_toTopOf="@+id/neck" />
+
+            <RadioGroup
+                android:id="@+id/motorIncrementMultiplierRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView16">
+
+                <RadioButton
+                    android:id="@+id/motorIncrementMultiplier1RadioButton"
+                    android:layout_width="57dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/_1x"
+                    android:textColor="?android:textColorPrimary" />
+
+                <RadioButton
+                    android:id="@+id/motorIncrementMultiplier2RadioButton"
+                    android:layout_width="59dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_2x"
+                    android:textColor="?android:textColorPrimary" />
+
+                <RadioButton
+                    android:id="@+id/motorIncrementMultiplier4RadioButton"
+                    android:layout_width="58dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/_4x"
+                    android:textColor="?android:textColorPrimary" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:text="@string/multiplier"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/motors" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

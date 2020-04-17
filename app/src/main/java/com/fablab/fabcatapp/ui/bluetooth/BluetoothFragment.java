@@ -42,13 +42,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothFragment extends Fragment {
-    private BluetoothSocket bluetoothSocket;
-    private boolean ignoreInStreamInterruption = false;
+    public static boolean ignoreInStreamInterruption = false;
+    private static BluetoothSocket bluetoothSocket;
     private static OutputStream outStream;
     private static boolean connected;
 
@@ -146,6 +145,9 @@ public class BluetoothFragment extends Fragment {
 
     private void startDiscovery(BluetoothAdapter adapter, BroadcastReceiver broadcastReceiver) {
         TextView discoveryCountdownTextView = root.findViewById(R.id.discoveryCountdown);
+        discoveryCountdownTextView.setTextColor(ContextCompat.getColor(requireContext(),  (OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext()) ? R.color.textColorPrimary : R.color.menuBackGround)));
+
+        pairedAndAvailableDevices.clear(); //otherwise old paired and available devices will be listed too
 
         if (adapter.isDiscovering()) {
             //restart discovery if it's already running
@@ -163,7 +165,7 @@ public class BluetoothFragment extends Fragment {
             }
 
             public void onFinish() {
-                if (getContext() != null) discoveryCountdownTextView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.scanComplete));
+                if (getContext() != null) discoveryCountdownTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.scanComplete));
                 else contextNotFound();
 
                 discoveryCountdownTextView.setText(R.string.scan_complete);
@@ -304,7 +306,7 @@ public class BluetoothFragment extends Fragment {
                 connect(device);
             });
             try {
-                currentButton.setBackground(Objects.requireNonNull(getContext()).getDrawable(R.drawable.device_button));
+                currentButton.setBackground(requireContext().getDrawable(R.drawable.device_button));
             } catch (Exception e)  {
                 MainActivity.createAlert("Error while getting drawable. Try restarting the app.", root, false);
             }
@@ -371,9 +373,6 @@ public class BluetoothFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         if (!ignoreInStreamInterruption) {
-                            //we need to create a notification because it isn't possible to create an alert dialog from a not visible fragment
-                            //new Handler(Looper.getMainLooper()).post(() -> MainActivity.createNotification("Disconnected", "The device has been disconnected.", "Disconnected", OptionsFragment.getPreferencesBoolean("debug", getContext()) ? "InStream interrupted Cause: " + e.getMessage() + "\nStack: " + Arrays.toString(e.getStackTrace()) : "Connection closed by the remote host.", application));
-                            //see MainActivity dispatch touch event, we're using the first touch input after disconnection to create the alert.
                             latestException = e;
                             connectionUnexpectedlyClosed = true;
                             setDiscoveryOrDisconnectButtonState(true);
@@ -423,6 +422,8 @@ public class BluetoothFragment extends Fragment {
             connected = false;
         } catch (IOException e) {
             new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Error while closing the client socket: disconnected", root, false));
+        } catch (NullPointerException e) {
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Error while closing the client socket: " + e.getMessage(), requireContext()));
         }
     }
 

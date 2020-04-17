@@ -100,4 +100,8 @@
     <string name="info">Info</string>
     <string name="visit_our_website">Visit our website</string>
     <string name="about_us">About us</string>
+    <string name="_1x">1x</string>
+    <string name="_2x">2x</string>
+    <string name="_4x">4x</string>
+    <string name="multiplier">Multiplier</string>
 </resources>

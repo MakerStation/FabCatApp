@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                if (BluetoothFragment.connectionUnexpectedlyClosed) {
+                if (BluetoothFragment.connectionUnexpectedlyClosed && !BluetoothFragment.ignoreInStreamInterruption) {
                     new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", context));
                     BluetoothFragment.connectionUnexpectedlyClosed = false;
                     BluetoothFragment.latestException = null;

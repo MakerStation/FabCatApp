@@ -44,22 +44,22 @@ public class Cat {
         pitchRoll[1] = roll;
     }
 
-    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate, int stringResource, Context applicationContext) {
+    public void moveMotor(View callingView, int motorId, boolean increment, int viewToUpdate, int stringResource, Context applicationContext, int motorIncrementMultiplier) {
         if (BluetoothFragment.checkConnection(callingView)) {
             TextView currentTextView = callingView.findViewById(viewToUpdate);
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if ((MotorsFragment.motorPositions[motorId] == 180 && increment) || (MotorsFragment.motorPositions[motorId] == 0 && !increment)) {
+                    if ((MotorsFragment.motorPositions[motorId] + motorIncrementMultiplier > 180 && increment) || (MotorsFragment.motorPositions[motorId] - motorIncrementMultiplier < 0 && !increment)) {
                         MainActivity.createAlert("Limit reached!", callingView, true);
                     } else if (increment) {
-                        MotorsFragment.motorPositions[motorId]++;
-                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[motorId])));
+                        MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]] += motorIncrementMultiplier;
+                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]]);
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]])));
                     } else {
-                        MotorsFragment.motorPositions[motorId]--;
-                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[motorId]);
-                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[motorId])));
+                        MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]] -= motorIncrementMultiplier;
+                        BluetoothFragment.sendData(callingView, (byte) 220, (byte) motorId, (byte) MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]]);
+                        currentTextView.post(() -> currentTextView.setText(applicationContext.getResources().getString(stringResource, MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]])));
                     }
                 }
             };
@@ -85,16 +85,17 @@ public class Cat {
         }
     }
 
-    public void stopAllMovementThreads(View callingView) {
+    public void stopAllMovementThreads(View root) {
         for(int i = 0; i < motorMovementTimer.size(); i++) {
             int key = motorMovementTimer.keyAt(i);
 
             if (motorMovementTimer.get(key) != null) {
                 motorMovementTimer.get(key).cancel();
             } else {
-                MainActivity.createAlert("Couldn't terminate Timer, Timer is null.", callingView, true);
+                MainActivity.createAlert("Couldn't terminate Timer, Timer is null.", root, true);
             }
         }
+
         motorMovementTimer.clear();
     }
 }

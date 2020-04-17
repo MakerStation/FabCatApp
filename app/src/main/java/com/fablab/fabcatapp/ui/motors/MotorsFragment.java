@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,13 +18,16 @@ import androidx.fragment.app.Fragment;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
+import com.fablab.fabcatapp.ui.options.OptionsFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MotorsFragment extends Fragment {
     private View root;
+    public static int[] motorNumbers = {1, 0, 2, 3, 4, 7, 8, 6, 5, 10, 9};
     public static int[] motorPositions = {90, 90, 90, 50, 50, 50, 50, 120, 120, 120, 120};
-    private int[] motorNumbers = {1, 0, 2, 3, 4, 7, 8, 6, 5, 10, 9};
+    private int motorIncrementMultiplier;
     private ArrayList<Button> motorIncrementButtons = new ArrayList<>();
     private ArrayList<Button> motorDecrementButtons = new ArrayList<>();
     private int[] views = {R.id.head, R.id.neck, R.id.tail, R.id.frontLeftShoulder, R.id.frontRightShoulder, R.id.frontLeftKnee, R.id.frontRightKnee, R.id.backLeftShoulder, R.id.backRightShoulder, R.id.backLeftKnee, R.id.backRightKnee};
@@ -34,6 +38,35 @@ public class MotorsFragment extends Fragment {
     //app not for blind people
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_motors, container, false);
+
+        RadioGroup motorIncrementMultiplierRadioGroup = root.findViewById(R.id.motorIncrementMultiplierRadioGroup);
+        motorIncrementMultiplier = OptionsFragment.getPreferencesInt("motorIncrementMultiplier", getContext());
+
+        if (motorIncrementMultiplier != 1)
+            motorIncrementMultiplierRadioGroup.check(motorIncrementMultiplier == 2 ? R.id.motorIncrementMultiplier2RadioButton : R.id.motorIncrementMultiplier4RadioButton);
+
+        motorIncrementMultiplierRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch(checkedId){
+                case R.id.motorIncrementMultiplier1RadioButton:
+                    if (motorIncrementMultiplier != 1) {
+                        OptionsFragment.setPreferencesInt("motorIncrementMultiplier", 1, getContext());
+                        motorIncrementMultiplier = 1;
+                    }
+                    break;
+                case R.id.motorIncrementMultiplier2RadioButton:
+                    if (motorIncrementMultiplier != 2) {
+                        OptionsFragment.setPreferencesInt("motorIncrementMultiplier", 2, getContext());
+                        motorIncrementMultiplier = 2;
+                    }
+                    break;
+                case R.id.motorIncrementMultiplier4RadioButton:
+                    if (motorIncrementMultiplier != 4) {
+                        OptionsFragment.setPreferencesInt("motorIncrementMultiplier", 4, getContext());
+                        motorIncrementMultiplier = 4;
+                    }
+                    break;
+            }
+        });
 
         motorIncrementButtons.add(root.findViewById(R.id.headIncrementButton));
         motorDecrementButtons.add(root.findViewById(R.id.headDecrementButton));
@@ -87,7 +120,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j], stringResources[j], getContext());
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], true, views[j], stringResources[j], getContext(), motorIncrementMultiplier);
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }
@@ -110,7 +143,7 @@ public class MotorsFragment extends Fragment {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         if (BluetoothFragment.cat != null) {
-                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j], stringResources[j], getContext());
+                            BluetoothFragment.cat.moveMotor(root, motorNumbers[j], false, views[j], stringResources[j], getContext(), motorIncrementMultiplier);
                         } else {
                             MainActivity.createAlert("Not connected!", root, true);
                         }
@@ -145,5 +178,12 @@ public class MotorsFragment extends Fragment {
             return false;
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPause() {
+        if (BluetoothFragment.cat != null)
+            BluetoothFragment.cat.stopAllMovementThreads(root);
+        super.onPause();
     }
 }
