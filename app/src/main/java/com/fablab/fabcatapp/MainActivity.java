@@ -106,16 +106,12 @@ public class MainActivity extends AppCompatActivity {
     }
     private void preInitPermissionCheck() {
         if (!checkLocationPermission()) {
-            System.out.println("*****GPS PERMISSION NOT RECEIVED");
             currentPermissionRequest = "GPS";
             ActivityCompat.requestPermissions(this, new String[]{ //always add permission to manifest.xml
                     android.Manifest.permission.ACCESS_FINE_LOCATION
             }, 1);
-        } else {
-            System.out.println("*****GPS PERMISSION RECEIVED");
         }
         if (!checkBluetoothPermission()) {
-            System.out.println("******BLUETOOTH PERMISSION NOT RECEIVED");
             currentPermissionRequest = "BLUETOOTH";
             ActivityCompat.requestPermissions(this, new String[] {
                     Manifest.permission.BLUETOOTH
@@ -124,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[] {
                     Manifest.permission.BLUETOOTH_ADMIN
             }, 1);
-        } else {
-            System.out.println("****BLUETOOTH PERMISSION RECEIVED");
         }
     }
 
