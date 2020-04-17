@@ -262,11 +262,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override //when you click out of an EditText, it loses focus and it calls the event listener
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (BluetoothFragment.connectionUnexpectedlyClosed) {
-            createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", this) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", this);
-            BluetoothFragment.connectionUnexpectedlyClosed = false;
-            BluetoothFragment.latestException = null;
-        }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
