@@ -21,7 +21,6 @@ import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.fablab.fabcatapp.ui.options.OptionsFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MotorsFragment extends Fragment {
     private View root;
@@ -183,7 +182,7 @@ public class MotorsFragment extends Fragment {
     @Override
     public void onPause() {
         if (BluetoothFragment.cat != null)
-            BluetoothFragment.cat.stopAllMovementThreads(root);
+            BluetoothFragment.cat.stopAllMovementThreads(getView());
         super.onPause();
     }
 }

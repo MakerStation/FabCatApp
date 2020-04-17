@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fablab.fabcatapp.ui.options.OptionsFragment;
-
 public class SplashScreen extends AppCompatActivity {
     public static String compactAppVersion;
 

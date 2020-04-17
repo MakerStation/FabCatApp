@@ -428,7 +428,7 @@ public class BluetoothFragment extends Fragment {
     }
 
     public static void sendData(View callingView, byte pref, byte cmd, byte... extra) {
-        if (checkConnection(callingView)) {
+        if (checkConnection()) {
             byte[] command = new byte[2 + extra.length];
             command[0] = pref;
             command[1] = cmd;
@@ -440,16 +440,13 @@ public class BluetoothFragment extends Fragment {
                 String msg = "Couldn't write command: " + e.getMessage();
                 MainActivity.createAlert(msg, callingView, false);
             }
+        } else {
+            MainActivity.createAlert("Not connected!", callingView, true);
         }
     }
 
-    public static boolean checkConnection(View callingView) {
-        if (outStream == null) {
-            MainActivity.createAlert("Not connected!", callingView, true);
-            return false;
-        } else {
-            return true;
-        }
+    public static boolean checkConnection() {
+        return outStream != null;
     }
 
     public static void sendCustomCommand(View view, Context applicationContext) {
