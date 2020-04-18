@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,6 +46,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,7 +71,8 @@ public class BluetoothFragment extends Fragment {
     private ArrayList<BluetoothDevice> pairedAndAvailableDevices = new ArrayList<>();
 
     private static BluetoothAdapter adapter;
-
+    private AlertDialog animationDialog;
+    private static Thread connectionThread;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
@@ -107,6 +110,8 @@ public class BluetoothFragment extends Fragment {
                 }
             });
         }
+
+        this.setRetainInstance(true);
 
         this.root = root;
 
@@ -342,16 +347,16 @@ public class BluetoothFragment extends Fragment {
                     connectButtons.get(i).setOnClickListener((v2) -> MainActivity.createAlert("Already connecting!", root, true));
                 }
 
-                AlertDialog animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
+                animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
 
-                startConnectionAnimation(animationDialog);
+                startConnectionAnimation();
 
                 new CountDownTimer(2000, 400) {
                     public void onTick(long millisUntilFinished) {
                     }
 
                     public void onFinish() {
-                        connect(device, animationDialog);
+                        connect(device);
                     }
                 }.start();
             });
@@ -374,7 +379,7 @@ public class BluetoothFragment extends Fragment {
 
     //-----------connect--------------
 
-    private void startConnectionAnimation(AlertDialog animationDialog) {
+    private void startConnectionAnimation() {
         ImageView animation = new ImageView(requireContext());
 
         final float scale = requireContext().getResources().getDisplayMetrics().density;
@@ -391,6 +396,14 @@ public class BluetoothFragment extends Fragment {
         animationLayout.addView(animation);
 
         animationDialog.show();
+        try {
+            //we need to prevent the dialog from dimming the view outside of its window, otherwise the gif background won't correspond to the current one.
+            WindowManager.LayoutParams lp = Objects.requireNonNull(animationDialog.getWindow()).getAttributes();
+            lp.dimAmount=0.0f;
+            animationDialog.getWindow().setAttributes(lp);
+        } catch (NullPointerException e) {
+            MainActivity.createAlert("Failed to set some settings on the loading animation. Error code 3x03", root, false);
+        }
         animationDialog.setContentView(animationLayout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
 
         Glide.with(requireContext()).load((OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext())) ? R.drawable.connecting_dark : R.drawable.connecting_light).into((ImageView) animationLayout.findViewById(animationId)); //cast is necessary due to Target<Drawable> being ambiguous
@@ -400,90 +413,100 @@ public class BluetoothFragment extends Fragment {
         animationDialog.dismiss();
     }
 
-    private void connect(BluetoothDevice device, AlertDialog animationDialog) {
-        LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
-        TextView discoveryCountdownTextView = root.findViewById(R.id.discoveryCountdown);
+    private void connect(BluetoothDevice device) {
+        Runnable r = () -> {
+            LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
+            TextView discoveryCountdownTextView = root.findViewById(R.id.discoveryCountdown);
 
-        final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-        try {
-            bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
-        } catch (IOException e) {
-            MainActivity.createAlert("Socket creation failed ): Error code 2x08", root, false);
-        }
+            final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+            try {
+                bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
+            } catch (IOException e) {
+                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Socket creation failed ): Error code 2x08", root, false));
+            }
 
-        try {
-            bluetoothSocket.connect();
-            cat = new Cat();
-            connected = true;
             Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
-            discoveryOrDisconnectButton.setEnabled(true);
 
-            setDiscoveryOrDisconnectButtonState(false);
-            ignoreInStreamInterruption = false;
-            MainActivity.createAlert("Connection successful.", root, false);
-            bluetoothScrollViewLayout.removeAllViews();
-            discoveryCountdownTextView.setText("");
-            stopConnectionAnimation(animationDialog);
+            try {
+                bluetoothSocket.connect();
+                cat = new Cat();
+                connected = true;
+                discoveryOrDisconnectButton.post(() -> {
+                    discoveryOrDisconnectButton.setEnabled(true);
+                    setDiscoveryOrDisconnectButtonState(false);
+                });
 
-            TextView output = new TextView(getContext());
-            bluetoothScrollViewLayout.addView(output);
+                ignoreInStreamInterruption = false;
+                MainActivity.createAlert("Connection successful.", root, false);
+                bluetoothScrollViewLayout.post(() -> {
+                    bluetoothScrollViewLayout.removeAllViews();
+                    TextView output = new TextView(getContext());
+                    bluetoothScrollViewLayout.addView(output);
+                });
+                discoveryCountdownTextView.post(() -> discoveryCountdownTextView.setText(""));
+                stopConnectionAnimation(animationDialog);
 
-            outStream = bluetoothSocket.getOutputStream();
+                outStream = bluetoothSocket.getOutputStream();
 
-            InputStream in = bluetoothSocket.getInputStream();
+                InputStream in = bluetoothSocket.getInputStream();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        String message;
-                        while ((message = br.readLine()) != null) {
-//                    TextView output = new TextView(getContext());
-//                    bluetoothScrollViewLayout.addView(output);
-//                    final String msgToLambda = message;
-//                    output.post(() -> output.append(msgToLambda + "\n"));
-//
-//                    bluetoothScrollView.post(() -> bluetoothScrollView.fullScroll(View.FOCUS_DOWN));
-                            if (message.startsWith("220")) {
-                                message = message.substring(3);
-                                cat.pitchRollChanged(message.substring(0, 3), message.substring(3, 6));
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            String message;
+                            while ((message = br.readLine()) != null) {
+                                if (message.startsWith("220")) {
+                                    message = message.substring(3);
+                                    cat.pitchRollChanged(message.substring(0, 3), message.substring(3, 6));
+                                }
                             }
+                        } catch (Exception e) {
+                            if (!ignoreInStreamInterruption) {
+                                latestException = e;
+                                connectionUnexpectedlyClosed = true;
+                                discoveryOrDisconnectButton.post(() -> {
+                                    setDiscoveryOrDisconnectButtonState(true);
+                                    enableConnectButtons();
+                                });
+                            }
+                            outStream = null;
+                            connected = false;
                         }
-                    } catch (Exception e) {
-                        if (!ignoreInStreamInterruption) {
-                            latestException = e;
-                            connectionUnexpectedlyClosed = true;
-                            setDiscoveryOrDisconnectButtonState(true);
-                        }
-                        outStream = null;
-                        connected = false;
-                        enableConnectButtons();
+                    }
+                }.start();
+            } catch (Exception e) {
+                stopConnectionAnimation(animationDialog);
+                try {
+                    bluetoothSocket.close();
+                } catch (NullPointerException | IOException ie) {
+                    if (!OptionsFragment.getPreferencesBoolean("debug", getContext()))
+                        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Could not close the client socket. Enable debug mode for further information. Error code 2x09", root, false));
+                    else
+                        new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Couldn't close the client socket, error code 2x09. Cause: " + ie.getCause() + " \n Stack trace: " + Arrays.toString(e.getStackTrace()), requireContext()));
+
+                } finally {
+                    connected = false;
+                    discoveryOrDisconnectButton.post(() -> setDiscoveryOrDisconnectButtonState(true));
+                    for (int i = 0; i < connectButtons.size(); i++) {
+                        int j = i;
+                        connectButtons.get(i).post(() -> connectButtons.get(j).setClickable(true));
                     }
                 }
-            }.start();
-        } catch (Exception e) {
-            try {
-                bluetoothSocket.close();
-            } catch (NullPointerException | IOException ie) {
-                if (!OptionsFragment.getPreferencesBoolean("debug", getContext()))
-                    MainActivity.createAlert("Could not close the client socket. Enable debug mode for further information. Error code 2x09", root, false);
-                else
-                    MainActivity.createOverlayAlert("Error", "Couldn't close the client socket, error code 2x09. Cause: " + ie.getCause() + " \n Stack trace: " + Arrays.toString(e.getStackTrace()), requireContext());
-
-            } finally {
+                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Connection failed. Error code 2x10. Cause: " + e.getMessage() + (OptionsFragment.getPreferencesBoolean("debug", requireContext()) ? "\nStack trace: " + Arrays.toString(e.getStackTrace()) : "\nEnable debug for further information."), getContext()));
+                outStream = null;
                 connected = false;
-                setDiscoveryOrDisconnectButtonState(true);
-                for (int i = 0; i < connectButtons.size(); i++) {
-                    connectButtons.get(i).setClickable(true);
-                }
+                discoveryOrDisconnectButton.post(() -> {
+                        enableConnectButtons();
+                        discoveryOrDisconnectButton.setEnabled(true);
+                });
             }
-            MainActivity.createOverlayAlert("Error", "Connection failed. Error code 2x10. Cause: " + e.getMessage() + (OptionsFragment.getPreferencesBoolean("debug", requireContext()) ? "\nStack trace: " + Arrays.toString(e.getStackTrace()) : "\nEnable debug for further information."), getContext());
-            outStream = null;
-            connected = false;
-            enableConnectButtons();
-        }
+        };
+
+        connectionThread = new Thread(r);
+        connectionThread.start();
     }
 
     private void enableConnectButtons() {
@@ -498,11 +521,18 @@ public class BluetoothFragment extends Fragment {
                 discoveryOrDisconnectButton.setText(R.string.connecting);
                 discoveryOrDisconnectButton.setEnabled(false);
 
-                AlertDialog animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
+                animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
 
-                startConnectionAnimation(animationDialog);
+                startConnectionAnimation();
 
-                connect(pairedAndAvailableDevices.get(j), animationDialog);
+                new CountDownTimer(2000, 400) {
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        connect(pairedAndAvailableDevices.get(j));
+                    }
+                }.start();
             });
         }
     }
@@ -619,12 +649,25 @@ public class BluetoothFragment extends Fragment {
 
     @Override
     public void onPause() {
-        super.onPause();
         if (countDownTimer != null && isDiscoveryRunning) {
             countDownTimer.cancel();
             if (getAdapter() != null) getAdapter().cancelDiscovery();
             else MainActivity.createOverlayAlert("Error", "We had an error cancelling the device discovery. It is recommended to restart the app. Error code 2x06", getContext());
             isDiscoveryRunning = false;
         }
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (animationDialog != null && animationDialog.isShowing()) {
+            animationDialog.dismiss();
+            //we need to dismiss any dialog when the phone is rotated, otherwise an exception will be thrown. See https://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager
+        }
+        if (connectionThread != null && connectionThread.isAlive()) {
+            connectionThread.interrupt();
+            connectionThread = null;
+        }
+        super.onStop();
     }
 }

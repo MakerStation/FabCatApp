@@ -82,10 +82,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (BluetoothFragment.connectionUnexpectedlyClosed && !BluetoothFragment.ignoreInStreamInterruption) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host. Error code: 2x01", context));
-                    BluetoothFragment.connectionUnexpectedlyClosed = false;
-                    BluetoothFragment.latestException = null;
-                    BluetoothFragment.cat = null;
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (BluetoothFragment.latestException == null) {
+                            MainActivity.createOverlayAlert("Disconnected", "The connection was unexpectedly closed without further information. Error code 2x14", context);
+                        } else {
+                            MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host. Error code: 2x01", context);
+                            BluetoothFragment.connectionUnexpectedlyClosed = false;
+                            BluetoothFragment.latestException = null;
+                            BluetoothFragment.cat = null;
+                        }
+                    });
                 }
             }
         };
