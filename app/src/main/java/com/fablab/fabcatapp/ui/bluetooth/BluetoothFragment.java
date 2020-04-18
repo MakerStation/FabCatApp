@@ -376,9 +376,12 @@ public class BluetoothFragment extends Fragment {
 
     private void startConnectionAnimation(AlertDialog animationDialog) {
         ImageView animation = new ImageView(requireContext());
+
+        final float scale = requireContext().getResources().getDisplayMetrics().density;
+        int pixelsW = (int) (220 * scale + 0.5f);
+
         animation.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
+                pixelsW, pixelsW
         ));
 
         int animationId = View.generateViewId();
@@ -388,7 +391,7 @@ public class BluetoothFragment extends Fragment {
         animationLayout.addView(animation);
 
         animationDialog.show();
-        animationDialog.addContentView(animationLayout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
+        animationDialog.setContentView(animationLayout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
 
         Glide.with(requireContext()).load((OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext())) ? R.drawable.connecting_dark : R.drawable.connecting_light).into((ImageView) animationLayout.findViewById(animationId)); //cast is necessary due to Target<Drawable> being ambiguous
     }
