@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", context));
                     BluetoothFragment.connectionUnexpectedlyClosed = false;
                     BluetoothFragment.latestException = null;
+                    BluetoothFragment.cat = null;
                 }
             }
         };

@@ -51,7 +51,7 @@ public class Cat {
                 @Override
                 public void run() {
                     if (!BluetoothFragment.checkConnection()) {
-                        MainActivity.createAlert("Connection lost!", callingView, false);
+                        MainActivity.createAlert("Connection lost!", callingView, true);
                         this.cancel();
                     } else {
                         if ((MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]] + motorIncrementMultiplier > 180 && increment) || (MotorsFragment.motorPositions[MotorsFragment.motorNumbers[motorId]] - motorIncrementMultiplier < 0 && !increment)) {
@@ -77,12 +77,20 @@ public class Cat {
     }
 
     public void function(View callingView, int function) {
-        BluetoothFragment.sendData(callingView, (byte) 221, (byte) function);
-        MotorsFragment.motorPositions = positions[function];
+        if (!BluetoothFragment.checkConnection()) {
+            MainActivity.createAlert("Connection lost!", callingView, true);
+        } else {
+            BluetoothFragment.sendData(callingView, (byte) 221, (byte) function);
+            MotorsFragment.motorPositions = positions[function];
+        }
     }
 
     public void toggleFunction(View callingView, int function) {
-        BluetoothFragment.sendData(callingView, (byte) 222, (byte) function);
+        if (!BluetoothFragment.checkConnection()) {
+            MainActivity.createAlert("Connection lost!", callingView, true);
+        } else {
+            BluetoothFragment.sendData(callingView, (byte) 222, (byte) function);
+        }
     }
 
     public void stopMovement(int motorId) {
