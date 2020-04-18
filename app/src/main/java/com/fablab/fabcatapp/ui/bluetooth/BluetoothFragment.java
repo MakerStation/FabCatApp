@@ -30,7 +30,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-//import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.cat.Cat;
@@ -390,7 +390,7 @@ public class BluetoothFragment extends Fragment {
         animationDialog.show();
         animationDialog.addContentView(animationLayout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
 
-        //Glide.with(requireContext()).load((OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext())) ? R.drawable.connecting_dark : R.drawable.connecting_light).into((ImageView) animationLayout.findViewById(animationId)); //cast is necessary due to Target<Drawable> being ambiguous
+        Glide.with(requireContext()).load((OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext())) ? R.drawable.connecting_dark : R.drawable.connecting_light).into((ImageView) animationLayout.findViewById(animationId)); //cast is necessary due to Target<Drawable> being ambiguous
     }
 
     private void stopConnectionAnimation(AlertDialog animationDialog) {
