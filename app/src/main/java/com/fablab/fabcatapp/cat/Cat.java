@@ -107,7 +107,7 @@ public class Cat {
             if (motorMovementTimer.get(key) != null) {
                 motorMovementTimer.get(key).cancel();
             } else {
-                MainActivity.createAlert("Couldn't terminate Timer, Timer is null.", root, true);
+                MainActivity.createAlert("Couldn't terminate Timer, Timer is null. Error code 5x03", root, true);
             }
         }
 

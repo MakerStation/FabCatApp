@@ -82,7 +82,7 @@ public class OptionsFragment extends Fragment {
     public static int getPreferencesInt(String key, Context applicationContext) {
         int obtainedValue;
         if (!preferences.contains(key)) {
-            MainActivity.createOverlayAlert("Error", "Error while reading: " + key + ". It is recommended to restart the app.", applicationContext);
+            MainActivity.createOverlayAlert("Error", "Error while reading: " + key + ". It is recommended to restart the app. Error code 4x03", applicationContext);
             obtainedValue = -1;
         } else {
             obtainedValue = preferences.getInt(key, -1);
@@ -93,7 +93,7 @@ public class OptionsFragment extends Fragment {
     public static void setPreferencesInt(String key, int value, Context applicationContext) {
         if (preferences != null) {
             if (!preferences.edit().putInt(key, value).commit()) {
-                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app. Error code 4x02", applicationContext);
             }
         }
     }
@@ -102,7 +102,7 @@ public class OptionsFragment extends Fragment {
         if (preferences != null) {
             return preferences.getBoolean("isAppFirstRun", true);
         } else {
-            MainActivity.createOverlayAlert("Error", "Error while fetching preferences. It is recommended to restart the app.", applicationContext);
+            MainActivity.createOverlayAlert("Error", "Error while fetching preferences. It is recommended to restart the app. Error code 4x03", applicationContext);
             return false;
         }
     }
@@ -110,16 +110,16 @@ public class OptionsFragment extends Fragment {
     public static void setPreferencesBoolean(String key, boolean value, Context applicationContext) {
         if (preferences != null) {
             if (!preferences.edit().putBoolean(key, value).commit()) {
-                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app.", applicationContext);
+                MainActivity.createOverlayAlert("Error", "Error while writing: " + key + ". It is recommended to restart the app. Error code 4x02", applicationContext);
             }
         } else {
-            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup", applicationContext);
+            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup. Error code 4x01", applicationContext);
         }
     }
 
     public static boolean getPreferencesBoolean(String key, Context applicationContext) {
         if (preferences == null) {
-            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup", applicationContext);
+            MainActivity.createPreferencesErrorAlert("Error", "It isn't possible for the app to save or read settings anymore due to an unknown error, that occurred during the app startup. Error code 4x01", applicationContext);
             return false;
         } else {
             return preferences.getBoolean(key, false);
@@ -132,7 +132,7 @@ public class OptionsFragment extends Fragment {
         if (context != null) {
             MainActivity.hideKeyboardFrom(context, root, context);
         } else {
-            MainActivity.createOverlayAlert("Error", "Couldn't get the context of this view. It is recommended to restart the app.", requireActivity().getApplicationContext());
+            MainActivity.createOverlayAlert("Error", "Couldn't get the context of this view. It is recommended to restart the app. Error code 5x01", requireActivity().getApplicationContext());
         }
     }
 

@@ -105,4 +105,6 @@
     <string name="_4x">4x</string>
     <string name="multiplier">Multiplier</string>
     <string name="build">Build</string>
+    <string name="cancel_discovery">Cancel discovery</string>
+    <string name="connecting">Connecting…</string>
 </resources>

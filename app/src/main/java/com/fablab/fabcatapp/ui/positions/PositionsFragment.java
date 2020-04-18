@@ -55,7 +55,7 @@ public class PositionsFragment extends Fragment {
     private boolean checkCat(View view) {
         if (BluetoothFragment.cat != null) return true;
         else {
-            MainActivity.createAlert("Cat not connected", view, true);
+            MainActivity.createAlert("Cat not connected.", view, true);
             return false;
         }
     }

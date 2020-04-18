@@ -86,7 +86,7 @@ public class FunctionsFragment extends Fragment {
                 }
             }, 0, delay == 0 ? 1 : delay);
         } else {
-            MainActivity.createCriticalErrorAlert("Critical error", "The buttons' normal behaviour has been compromised. It is compulsory to restart the app.", getContext());
+            MainActivity.createCriticalErrorAlert("Critical error", "The buttons' normal behaviour has been compromised. It is compulsory to restart the app. Error code 5x02", getContext());
         }
     }
 }

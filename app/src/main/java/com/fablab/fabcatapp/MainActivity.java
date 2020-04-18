@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (BluetoothFragment.connectionUnexpectedlyClosed && !BluetoothFragment.ignoreInStreamInterruption) {
-                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host.", context));
+                    new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Disconnected", OptionsFragment.getPreferencesBoolean("debug", context) ? "InStream interrupted Cause: " + BluetoothFragment.latestException.getMessage() + "\nStack: " + Arrays.toString(BluetoothFragment.latestException.getStackTrace()) : "Connection closed by the remote host. Error code: 2x01", context));
                     BluetoothFragment.connectionUnexpectedlyClosed = false;
                     BluetoothFragment.latestException = null;
                     BluetoothFragment.cat = null;
@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkLocationPermission(){
-
         String permission = "android.permission.ACCESS_FINE_LOCATION";
 
         int res = this.checkCallingOrSelfPermission(permission);
@@ -143,11 +142,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        System.out.println("*****PERMISSION CHECK DONE");
-
         if (requestCode == 1) {
 
             if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -172,15 +167,15 @@ public class MainActivity extends AppCompatActivity {
     public void exitDueTo(@NonNull String cause) {
         switch (cause) {
             case "GPS_PERMISSION": {
-                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the GPS to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
+                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the GPS to work. Error code 1x01").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
             break;
             case "BLUETOOTH_PERMISSION": {
-                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the Bluetooth to work.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
+                new AlertDialog.Builder(this).setTitle("Start failure").setMessage("The app requires the Bluetooth to work. Error code 1x02").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
             break;
             case "UNKNOWN_PERMISSION_ERROR": {
-                new AlertDialog.Builder(this).setTitle("Critical error").setMessage("Due to an unknown error in the permission request the app can't work. A restart is necessary.").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
+                new AlertDialog.Builder(this).setTitle("Critical error").setMessage("Due to an unknown error in the permission request the app can't work. A restart is necessary. Error code 1x03").setPositiveButton(android.R.string.yes, (dialog, which) -> finishAndRemoveTask()).setCancelable(false).show();
             }
 
             break;
@@ -251,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } else {
-            createOverlayAlert("Error", "We encountered an error while removing the keyboard.", applicationContext);
+            createOverlayAlert("Error", "We encountered an error while removing the keyboard. 3x02", applicationContext);
         }
     }
 

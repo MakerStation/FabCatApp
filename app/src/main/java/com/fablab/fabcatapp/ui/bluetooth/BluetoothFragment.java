@@ -21,13 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.fablab.fabcatapp.MainActivity;
 import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.cat.Cat;
@@ -64,6 +67,8 @@ public class BluetoothFragment extends Fragment {
 
     private ArrayList<Button> connectButtons = new ArrayList<>();
     private ArrayList<BluetoothDevice> pairedAndAvailableDevices = new ArrayList<>();
+
+    private static BluetoothAdapter adapter;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,9 +120,9 @@ public class BluetoothFragment extends Fragment {
         
         try {
             isDiscoveryRunning = true;
-            BluetoothAdapter adapter = getAdapter();
+            adapter = getAdapter();
             if (adapter == null) {
-                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Your device doesn't support Bluetooth therefore you won't be able to use it.", root, false));
+                new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Your device doesn't support Bluetooth therefore you won't be able to use it. Error code 2x03", root, false));
             } else {
                 try {
                     BroadcastReceiver receiver = registerListener();
@@ -132,13 +137,13 @@ public class BluetoothFragment extends Fragment {
                     errorMsg.setText(message);
                     bluetoothScrollViewLayout.addView(errorMsg);
 
-                    MainActivity.createAlert("There was an error while starting the discovery, you can try to restart the app. Cause: " + e.getMessage(), root, false);
+                    MainActivity.createAlert("There was an error while starting the discovery, you can try to restart the app. Error code 2x04 Cause: " + e.getMessage(), root, false);
                     isDiscoveryRunning = false;
                 }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
-            MainActivity.createAlert("We encountered an error, please make sure that your Bluetooth is enabled. Cause: " + e.getMessage(), root, false);
+            MainActivity.createAlert("We encountered an error, please make sure that your Bluetooth is enabled. Error code 2x05 Cause: " + e.getMessage(), root, false);
             isDiscoveryRunning = false;
         }
     }
@@ -148,12 +153,17 @@ public class BluetoothFragment extends Fragment {
         discoveryCountdownTextView.setTextColor(ContextCompat.getColor(requireContext(),  (OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext()) ? R.color.textColorPrimary : R.color.menuBackGround)));
 
         pairedAndAvailableDevices.clear(); //otherwise old paired and available devices will be listed too
+        connectButtons.clear();
 
         if (adapter.isDiscovering()) {
             //restart discovery if it's already running
             adapter.cancelDiscovery();
         }
         adapter.startDiscovery();
+
+        Button startDiscoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+        startDiscoveryOrDisconnectButton.setText(getString(R.string.cancel_discovery));
+        startDiscoveryOrDisconnectButton.setOnClickListener((v) -> cancelDiscovery());
 
         countdown = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("discoveryCountdown", 10);
 
@@ -172,11 +182,35 @@ public class BluetoothFragment extends Fragment {
                 adapter.cancelDiscovery();
                 isDiscoveryRunning = false;
                 scanFinished(broadcastReceiver, adapter);
+                countDownTimer = null;
             }
         }.start();
     }
 
+    private void cancelDiscovery() {
+        if (adapter != null)
+            adapter.cancelDiscovery();
+        else
+            MainActivity.createAlert("Couldn't cancel discovery: adapter is null. Error code 2x06", root, true);
+
+        if (countDownTimer != null)
+            countDownTimer.cancel();
+        else
+            MainActivity.createAlert("Couldn't cancel discovery: timer is null. Error code 2x07", root, true);
+
+        if (!connected)
+            setDiscoveryOrDisconnectButtonState(true);
+        else
+            MainActivity.createCriticalErrorAlert("Critical error", "A critical error has occurred, click on restart to restart the app. Error code: 2x02", requireContext());
+
+        isDiscoveryRunning = false;
+        TextView discoveryCountDownTextView = root.findViewById(R.id.discoveryCountdown);
+        discoveryCountDownTextView.setText("");
+    }
+
     private void scanFinished(BroadcastReceiver broadcastReceiver, BluetoothAdapter adapter) {
+        setDiscoveryOrDisconnectButtonState(true);
+
         if (getContext() != null)
             getContext().unregisterReceiver(broadcastReceiver);
         else contextNotFound();
@@ -300,15 +334,31 @@ public class BluetoothFragment extends Fragment {
 
             currentButton.setText(device.getName());
             currentButton.setOnClickListener((v) -> {
+                Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+                discoveryOrDisconnectButton.setText(R.string.connecting);
+                discoveryOrDisconnectButton.setEnabled(false);
+
                 for (int i = 0; i < connectButtons.size(); i++) {
                     connectButtons.get(i).setOnClickListener((v2) -> MainActivity.createAlert("Already connecting!", root, true));
                 }
-                connect(device);
+
+                AlertDialog animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
+
+                startConnectionAnimation(animationDialog);
+
+                new CountDownTimer(2000, 400) {
+                    public void onTick(long millisUntilFinished) {
+                    }
+
+                    public void onFinish() {
+                        connect(device, animationDialog);
+                    }
+                }.start();
             });
             try {
                 currentButton.setBackground(requireContext().getDrawable(R.drawable.device_button));
             } catch (Exception e)  {
-                MainActivity.createAlert("Error while getting drawable. Try restarting the app.", root, false);
+                MainActivity.createAlert("Error while getting drawable. Try restarting the app. Error code 3x01", root, false);
             }
                
             currentButton.setTextSize(15);
@@ -324,7 +374,30 @@ public class BluetoothFragment extends Fragment {
 
     //-----------connect--------------
 
-    private void connect(BluetoothDevice device) {
+    private void startConnectionAnimation(AlertDialog animationDialog) {
+        ImageView animation = new ImageView(requireContext());
+        animation.setLayoutParams(new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        int animationId = View.generateViewId();
+        animation.setId(animationId);
+
+        ConstraintLayout animationLayout = new ConstraintLayout(requireContext());
+        animationLayout.addView(animation);
+
+        animationDialog.show();
+        animationDialog.addContentView(animationLayout, new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
+
+        Glide.with(requireContext()).load((OptionsFragment.getPreferencesBoolean("DarkTheme", requireContext())) ? R.drawable.connecting_dark : R.drawable.connecting_light).into((ImageView) animationLayout.findViewById(animationId)); //cast is necessary due to Target<Drawable> being ambiguous
+    }
+
+    private void stopConnectionAnimation(AlertDialog animationDialog) {
+        animationDialog.dismiss();
+    }
+
+    private void connect(BluetoothDevice device, AlertDialog animationDialog) {
         LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
         TextView discoveryCountdownTextView = root.findViewById(R.id.discoveryCountdown);
 
@@ -332,18 +405,22 @@ public class BluetoothFragment extends Fragment {
         try {
             bluetoothSocket = device.createRfcommSocketToServiceRecord(myUUID);
         } catch (IOException e) {
-            MainActivity.createAlert("Socket creation failed ):", root, false);
+            MainActivity.createAlert("Socket creation failed ): Error code 2x08", root, false);
         }
 
         try {
             bluetoothSocket.connect();
             cat = new Cat();
             connected = true;
+            Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+            discoveryOrDisconnectButton.setEnabled(true);
+
             setDiscoveryOrDisconnectButtonState(false);
             ignoreInStreamInterruption = false;
             MainActivity.createAlert("Connection successful.", root, false);
             bluetoothScrollViewLayout.removeAllViews();
             discoveryCountdownTextView.setText("");
+            stopConnectionAnimation(animationDialog);
 
             TextView output = new TextView(getContext());
             bluetoothScrollViewLayout.addView(output);
@@ -386,8 +463,12 @@ public class BluetoothFragment extends Fragment {
         } catch (Exception e) {
             try {
                 bluetoothSocket.close();
-            } catch (IOException closeException) {
-                MainActivity.createAlert("Could not close the client socket", root, false);
+            } catch (NullPointerException | IOException ie) {
+                if (!OptionsFragment.getPreferencesBoolean("debug", getContext()))
+                    MainActivity.createAlert("Could not close the client socket. Enable debug mode for further information. Error code 2x09", root, false);
+                else
+                    MainActivity.createOverlayAlert("Error", "Couldn't close the client socket, error code 2x09. Cause: " + ie.getCause() + " \n Stack trace: " + Arrays.toString(e.getStackTrace()), requireContext());
+
             } finally {
                 connected = false;
                 setDiscoveryOrDisconnectButtonState(true);
@@ -395,7 +476,7 @@ public class BluetoothFragment extends Fragment {
                     connectButtons.get(i).setClickable(true);
                 }
             }
-            MainActivity.createOverlayAlert("Error", "Connection failed: " + e.getMessage(), getContext());
+            MainActivity.createOverlayAlert("Error", "Connection failed. Error code 2x10. Cause: " + e.getMessage() + (OptionsFragment.getPreferencesBoolean("debug", requireContext()) ? "\nStack trace: " + Arrays.toString(e.getStackTrace()) : "\nEnable debug for further information."), getContext());
             outStream = null;
             connected = false;
             enableConnectButtons();
@@ -409,7 +490,16 @@ public class BluetoothFragment extends Fragment {
                 for (int k = 0; k < connectButtons.size(); k++) {
                     connectButtons.get(k).setOnClickListener((v2) -> MainActivity.createAlert("Already connecting!", root, true));
                 }
-                connect(pairedAndAvailableDevices.get(j));
+
+                Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+                discoveryOrDisconnectButton.setText(R.string.connecting);
+                discoveryOrDisconnectButton.setEnabled(false);
+
+                AlertDialog animationDialog = new AlertDialog.Builder(requireContext(), R.style.DarkTheme_AnimationDialog).setCancelable(false).setTitle("Connecting").create();
+
+                startConnectionAnimation(animationDialog);
+
+                connect(pairedAndAvailableDevices.get(j), animationDialog);
             });
         }
     }
@@ -421,9 +511,9 @@ public class BluetoothFragment extends Fragment {
             setDiscoveryOrDisconnectButtonState(true);
             connected = false;
         } catch (IOException e) {
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Error while closing the client socket: disconnected", root, false));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Error while closing the client socket: disconnected. Error code 2x11", root, false));
         } catch (NullPointerException e) {
-            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Error while closing the client socket: " + e.getMessage(), requireContext()));
+            new Handler(Looper.getMainLooper()).post(() -> MainActivity.createOverlayAlert("Error", "Error while closing the client socket. Error code 2x12  Cause: " + e.getMessage(), requireContext()));
         }
     }
 
@@ -437,7 +527,7 @@ public class BluetoothFragment extends Fragment {
                 outStream.write(command);
                 outStream.flush();
             } catch (IOException e) {
-                String msg = "Couldn't write command: " + e.getMessage();
+                String msg = "Couldn't write command. Error code 2x13. Cause: " + e.getMessage();
                 MainActivity.createAlert(msg, callingView, false);
             }
         } else {
@@ -521,7 +611,7 @@ public class BluetoothFragment extends Fragment {
     }
 
     private void contextNotFound() {
-        MainActivity.createAlert("There was an error while updating the countdown. You should restart the app.", root, false);
+        MainActivity.createAlert("There was an error while updating the countdown. You should restart the app. Error code 5x01", root, false);
     }
 
     @Override
@@ -530,7 +620,7 @@ public class BluetoothFragment extends Fragment {
         if (countDownTimer != null && isDiscoveryRunning) {
             countDownTimer.cancel();
             if (getAdapter() != null) getAdapter().cancelDiscovery();
-            else MainActivity.createOverlayAlert("Error", "We had an error cancelling the device discovery. It is recommended to restart the app.", getContext());
+            else MainActivity.createOverlayAlert("Error", "We had an error cancelling the device discovery. It is recommended to restart the app. Error code 2x06", getContext());
             isDiscoveryRunning = false;
         }
     }

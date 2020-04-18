@@ -26,6 +26,11 @@
 
     <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="DarkTheme.AnimationDialog" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+    </style>
+
     <style name="LightTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -35,6 +40,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:textColorPrimary">@color/menuBackGround</item>
         <item name="colorButtonNormal">@color/positionsAndFunctionsButtonsBackgroundLight</item>
+        <item name="android:windowBackground">@color/lightWindowBackground</item>
     </style>
 
     <style name="LightTheme.NoActionBar">

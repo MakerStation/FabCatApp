@@ -13,4 +13,5 @@
     <color name="deviceButton">@color/colorPrimary</color>
     <color name="positionsAndFunctionsButtonsBackground">#888888</color>
     <color name="positionsAndFunctionsButtonsBackgroundLight">#408CFF</color>
+    <color name="lightWindowBackground">#FFFFFF</color>
 </resources>
