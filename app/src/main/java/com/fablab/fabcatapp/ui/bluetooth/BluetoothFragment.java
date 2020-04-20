@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -58,7 +59,6 @@ public class BluetoothFragment extends Fragment {
 
     private ArrayList<BluetoothDevice> availableDevices = new ArrayList<>();
     private static int countdown = 0;
-    private static boolean isDiscoveryRunning = false;
     public static Cat cat;
 
     private View root;
@@ -73,6 +73,8 @@ public class BluetoothFragment extends Fragment {
     private static BluetoothAdapter adapter;
     private AlertDialog animationDialog;
     private static Thread connectionThread;
+
+    private boolean waitingForBluetoothPermission = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_bluetooth, container, false);
@@ -90,11 +92,8 @@ public class BluetoothFragment extends Fragment {
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
                 bluetoothScrollViewLayout.removeAllViews();
                 try {
-                    if (!isDiscoveryRunning) {
-                        setupDiscovery();
-                    } else {
-                        MainActivity.createAlert("Wait for the current running scan to finish!", root, true);
-                    }
+                    discoveryOrDisconnectButton.setEnabled(false);
+                    setupDiscovery();
                 } catch (Exception e) {
                     if (OptionsFragment.getPreferencesBoolean("debug", getContext())) {
                         TextView errorMsg = new TextView(getContext());
@@ -121,35 +120,38 @@ public class BluetoothFragment extends Fragment {
     //------------discovery---------------
 
     private void setupDiscovery() {
-        LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
-        
         try {
-            isDiscoveryRunning = true;
             adapter = getAdapter();
-            if (adapter == null) {
+            if (adapter == null && !waitingForBluetoothPermission) {
                 new Handler(Looper.getMainLooper()).post(() -> MainActivity.createAlert("Your device doesn't support Bluetooth therefore you won't be able to use it. Error code 2x03", root, false));
-            } else {
-                try {
-                    BroadcastReceiver receiver = registerListener();
-                    startDiscovery(adapter, receiver);
-                } catch (Exception e) {
-                    String message = "Stack: " + Arrays.toString(e.getStackTrace()) + " **Cause**: " + e.getCause() + "**Message**: " + e.getMessage();
-                    TextView errorMsg = new TextView(getContext());
-                    errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    ));
-                    errorMsg.setText(message);
-                    bluetoothScrollViewLayout.addView(errorMsg);
-
-                    MainActivity.createAlert("There was an error while starting the discovery, you can try to restart the app. Error code 2x04 Cause: " + e.getMessage(), root, false);
-                    isDiscoveryRunning = false;
-                }
+            } else if (!waitingForBluetoothPermission) {
+                adapterIsOnline();
             }
         } catch (Exception e) {
             System.out.println(e.getMessage() + Arrays.toString(e.getStackTrace()));
             MainActivity.createAlert("We encountered an error, please make sure that your Bluetooth is enabled. Error code 2x05 Cause: " + e.getMessage(), root, false);
-            isDiscoveryRunning = false;
+        }
+    }
+
+    private void adapterIsOnline() {
+        LinearLayout bluetoothScrollViewLayout = root.findViewById(R.id.devicesLayout);
+
+        try {
+            BroadcastReceiver receiver = registerListener();
+            startDiscovery(adapter, receiver);
+        } catch (Exception e) {
+            if (OptionsFragment.getPreferencesBoolean("debug", requireContext())) {
+                String message = "Stack: " + Arrays.toString(e.getStackTrace()) + " **Cause**: " + e.getCause() + "**Message**: " + e.getMessage();
+                TextView errorMsg = new TextView(getContext());
+                errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+                errorMsg.setText(message);
+                bluetoothScrollViewLayout.addView(errorMsg);
+            }
+
+            MainActivity.createOverlayAlert("Error", "There was an error while starting the discovery, you can try to restart the app. Error code 2x04 Cause: " + e.getMessage(), requireContext());
         }
     }
 
@@ -168,6 +170,7 @@ public class BluetoothFragment extends Fragment {
 
         Button startDiscoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
         startDiscoveryOrDisconnectButton.setText(getString(R.string.cancel_discovery));
+        startDiscoveryOrDisconnectButton.setEnabled(true);
         startDiscoveryOrDisconnectButton.setOnClickListener((v) -> cancelDiscovery());
 
         countdown = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt("discoveryCountdown", 10);
@@ -185,7 +188,6 @@ public class BluetoothFragment extends Fragment {
 
                 discoveryCountdownTextView.setText(R.string.scan_complete);
                 adapter.cancelDiscovery();
-                isDiscoveryRunning = false;
                 scanFinished(broadcastReceiver, adapter);
                 countDownTimer = null;
             }
@@ -208,7 +210,6 @@ public class BluetoothFragment extends Fragment {
         else
             MainActivity.createCriticalErrorAlert("Critical error", "A critical error has occurred, click on restart to restart the app. Error code: 2x02", requireContext());
 
-        isDiscoveryRunning = false;
         TextView discoveryCountDownTextView = root.findViewById(R.id.discoveryCountdown);
         discoveryCountDownTextView.setText("");
     }
@@ -231,10 +232,34 @@ public class BluetoothFragment extends Fragment {
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, 1);
+
+                waitingForBluetoothPermission = true;
+
                 return bluetoothAdapter;
             } else {
                 return bluetoothAdapter;
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == -1) {
+            adapterIsOnline();
+        } else if (resultCode == 0) {
+            MainActivity.createAlert("You need to turn on Bluetooth in order to start scanning. Error code 2x15", root, false);
+            //button isn't unlocked if we don't grant permission.
+            setDiscoveryOrDisconnectButtonState(true);
+            Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+            discoveryOrDisconnectButton.setEnabled(true);
+        } else {
+            MainActivity.createOverlayAlert("Alert", "We encountered an unexpected error while filtering out some requests. No restart is needed, but some functions may not work. Error code 2x16", requireContext());
+            //we're resetting the button to not risk.
+            setDiscoveryOrDisconnectButtonState(true);
+            Button discoveryOrDisconnectButton = root.findViewById(R.id.startDiscoveryOrDisconnect);
+            discoveryOrDisconnectButton.setEnabled(true);
         }
     }
 
@@ -618,17 +643,18 @@ public class BluetoothFragment extends Fragment {
             discoveryOrDisconnectButton.setOnClickListener((v) -> {
                 bluetoothScrollViewLayout.removeAllViews();
                 try {
-                    if (!isDiscoveryRunning) {
-                        setupDiscovery();
-                    }
+                    discoveryOrDisconnectButton.setEnabled(false);
+                    setupDiscovery();
                 } catch (Exception e) {
-                    TextView errorMsg = new TextView(getContext());
-                    errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                    ));
-                    errorMsg.setText(getString(R.string.exception, e.getMessage(), Arrays.toString(e.getStackTrace())));
-                    bluetoothScrollViewLayout.addView(errorMsg);
+                    if (OptionsFragment.getPreferencesBoolean("debug", requireContext())) {
+                        TextView errorMsg = new TextView(getContext());
+                        errorMsg.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+                        errorMsg.setText(getString(R.string.exception, e.getMessage(), Arrays.toString(e.getStackTrace())));
+                        bluetoothScrollViewLayout.addView(errorMsg);
+                    }
 
                     MainActivity.createAlert("We encountered an error while scanning, you can try to restart the app.", root, false);
                 }
@@ -649,11 +675,10 @@ public class BluetoothFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if (countDownTimer != null && isDiscoveryRunning) {
+        if (countDownTimer != null && adapter != null && adapter.isDiscovering()) {
             countDownTimer.cancel();
-            if (getAdapter() != null) getAdapter().cancelDiscovery();
+            if (adapter != null) adapter.cancelDiscovery();
             else MainActivity.createOverlayAlert("Error", "We had an error cancelling the device discovery. It is recommended to restart the app. Error code 2x06", getContext());
-            isDiscoveryRunning = false;
         }
         super.onPause();
     }

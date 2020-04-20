@@ -15,6 +15,9 @@ import com.fablab.fabcatapp.R;
 import com.fablab.fabcatapp.ui.bluetooth.BluetoothFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
